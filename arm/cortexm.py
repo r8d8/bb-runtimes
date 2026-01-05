@@ -942,6 +942,21 @@ stm32_board_configuration = {
         "STM32_HSE_Clock_Frequency": "25_000_000",
         "STM32_FLASH_Latency": "6",
     },
+    "stm32h743disco": {
+        "STM32_Main_Clock_Frequency": "400_000_000",
+        "STM32_HSE_Clock_Frequency": "25_000_000",
+        "STM32_FLASH_Latency": "4",
+    },
+    "stm32h743": {
+        "STM32_Main_Clock_Frequency": "400_000_000",
+        "STM32_HSE_Clock_Frequency": "25_000_000",
+        "STM32_FLASH_Latency": "4",
+    },
+    "stm32h750disco": {
+        "STM32_Main_Clock_Frequency": "400_000_000",
+        "STM32_HSE_Clock_Frequency": "25_000_000",
+        "STM32_FLASH_Latency": "4",
+    },
 }
 
 
@@ -976,6 +991,8 @@ class Stm32(ArmV7MTarget):
         if self.mcu.startswith("stm32f4"):
             return "cortex-m4"
         elif self.mcu.startswith("stm32f7"):
+            return "cortex-m7"
+        elif self.mcu.startswith("stm32h7"):
             return "cortex-m7"
         else:
             assert False, "Unexpected MCU %s" % self.mcu
@@ -1014,6 +1031,10 @@ class Stm32(ArmV7MTarget):
             self.mcu = "stm32f7x"
         elif self.board in ["stm32f769disco"]:
             self.mcu = "stm32f7x9"
+        elif self.board in ["stm32h743disco", "stm32h743"]:
+            self.mcu = "stm32h7x"
+        elif self.board in ["stm32h750disco"]:
+            self.mcu = "stm32h7x"
         else:
             assert False, "Unknown stm32 board: %s" % self.board
 
@@ -1054,6 +1075,9 @@ class Stm32(ArmV7MTarget):
 
         elif self.mcu in ["stm32f7x", "stm32f7x9"]:
             self.add_gnat_source("arm/stm32/stm32f7x/s-stm32.adb")
+
+        elif self.mcu in ["stm32h7x"]:
+            self.add_gnat_source("arm/stm32/stm32h7x/s-stm32.adb")
 
         # tasking support
         self.add_gnarl_sources(

@@ -31,6 +31,8 @@ ALL_BSP = {
         "stm32f746disco",
         "stm32756geval",
         "stm32f769disco",
+        "stm32h743disco",
+        "stm32h750disco",
         "samg55",
         "sam4s",
         "samrh71",

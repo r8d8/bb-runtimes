@@ -8,9 +8,6 @@ licenses = "GPL-3.0-or-later WITH GCC-exception-3.1"
 
 project-files = []
 
-[build-switches]
-"*".ada_compiler_switches = ["-gnatwa", "-gnatwe"]
-
 [available.'case(os)']
 linux = true
 windows = true

@@ -25,8 +25,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Ada.Unchecked_Conversion;
-
 with System.BB.Parameters;
 
 with Interfaces;            use Interfaces;
@@ -53,48 +51,52 @@ package body System.STM32 is
 
    function System_Clocks return RCC_System_Clocks
    is
-      Source       : constant SYSCLK_Source :=
-                      SYSCLK_Source'Val (RCC_Periph.CFGR.SWS);
+      Source       : constant UInt32 := UInt32 (RCC_Periph.CFGR.SWS);
       Result       : RCC_System_Clocks;
 
    begin
+      --  System clock source: 000=HSI, 001=CSI, 010=HSE, 011=PLL1
       case Source is
 
          --  HSI as source (64 MHz)
 
-         when SYSCLK_SRC_HSI =>
+         when 0 =>  --  HSI
             Result.SYSCLK := Param.HSI_Clock;
 
          --  CSI as source (4 MHz)
 
-         when SYSCLK_SRC_CSI =>
+         when 1 =>  --  CSI
             Result.SYSCLK := 4_000_000;
 
          --  HSE as source
 
-         when SYSCLK_SRC_HSE =>
+         when 2 =>  --  HSE
             Result.SYSCLK := Param.HSE_Clock;
 
          --  PLL1 as source
 
-         when SYSCLK_SRC_PLL =>
+         when 3 =>  --  PLL1
             declare
-               Pllm   : constant UInt32 := UInt32 (RCC_Periph.PLLCKSELR.DIVM1);
-               Plln   : constant UInt32 := UInt32 (RCC_Periph.PLL1DIVR.DIVN1) + 1;
-               Pllp   : constant UInt32 := UInt32 (RCC_Periph.PLL1DIVR.DIVP1) + 1;
+               Pllm   : constant UInt32 :=
+                  UInt32 (RCC_Periph.PLLCKSELR.DIVM1);
+               Plln   : constant UInt32 :=
+                  UInt32 (RCC_Periph.PLL1DIVR.DIVN1) + 1;
+               Pllp   : constant UInt32 :=
+                  UInt32 (RCC_Periph.PLL1DIVR.DIVP1) + 1;
                Pllvco : UInt32;
                Pllinput : UInt32;
 
             begin
                --  Get PLL input frequency
-               case PLL_Source'Val (RCC_Periph.PLLCKSELR.PLLSRC) is
-                  when PLL_SRC_HSI =>
+               --  PLLSRC: 00=HSI, 01=CSI, 10=HSE, 11=No clock
+               case UInt32 (RCC_Periph.PLLCKSELR.PLLSRC) is
+                  when 0 =>  --  HSI
                      Pllinput := Param.HSI_Clock / Pllm;
-                  when PLL_SRC_CSI =>
+                  when 1 =>  --  CSI
                      Pllinput := 4_000_000 / Pllm;
-                  when PLL_SRC_HSE =>
+                  when 2 =>  --  HSE
                      Pllinput := Param.HSE_Clock / Pllm;
-                  when PLL_SRC_NONE =>
+                  when others =>  --  No clock
                      Pllinput := 0;
                end case;
 
@@ -104,33 +106,31 @@ package body System.STM32 is
                --  Calculate system clock
                Result.SYSCLK := Pllvco / Pllp;
             end;
+
+         when others =>
+            --  Unknown source, default to HSI
+            Result.SYSCLK := Param.HSI_Clock;
       end case;
 
       declare
          --  D1CPRE: D1 domain Core prescaler (CPU clock)
-         D1CPRE_Value : constant UInt32 := 
-            UInt32 (RCC_Periph.D1CFGR.D1CPRE);
+         D1CPRE_Value : constant Integer :=
+            Integer (RCC_Periph.D1CFGR.D1CPRE);
          D1CPRE_Div : constant UInt32 := D1CPRE_Presc_Table (D1CPRE_Value);
 
          --  HPRE: AHB prescaler (D2 domain)
-         HPRE_Value : constant UInt32 := UInt32 (RCC_Periph.D1CFGR.HPRE);
+         HPRE_Value : constant Integer := Integer (RCC_Periph.D1CFGR.HPRE);
          HPRE_Div : constant UInt32 := HPRE_Presc_Table (HPRE_Value);
 
-         --  D1PPRE: APB3 clock prescaler (D1 domain)
-         D1PPRE_Value : constant UInt32 := UInt32 (RCC_Periph.D1CFGR.D1PPRE);
-         D1PPRE_Div : constant UInt32 := PPRE_Presc_Table (D1PPRE_Value);
-
          --  D2PPRE1: APB1 clock prescaler (D2 domain)
-         D2PPRE1_Value : constant UInt32 := UInt32 (RCC_Periph.D2CFGR.D2PPRE1);
+         D2PPRE1_Value : constant Integer :=
+            Integer (RCC_Periph.D2CFGR.D2PPRE1);
          D2PPRE1_Div : constant UInt32 := PPRE_Presc_Table (D2PPRE1_Value);
 
          --  D2PPRE2: APB2 clock prescaler (D2 domain)
-         D2PPRE2_Value : constant UInt32 := UInt32 (RCC_Periph.D2CFGR.D2PPRE2);
+         D2PPRE2_Value : constant Integer :=
+            Integer (RCC_Periph.D2CFGR.D2PPRE2);
          D2PPRE2_Div : constant UInt32 := PPRE_Presc_Table (D2PPRE2_Value);
-
-         --  D3PPRE: APB4 clock prescaler (D3 domain)
-         D3PPRE_Value : constant UInt32 := UInt32 (RCC_Periph.D3CFGR.D3PPRE);
-         D3PPRE_Div : constant UInt32 := PPRE_Presc_Table (D3PPRE_Value);
 
       begin
          --  CPU clock (D1 domain)
@@ -142,8 +142,6 @@ package body System.STM32 is
          --  APB clocks
          Result.PCLK1 := Result.HCLK / D2PPRE1_Div;  -- APB1 (D2 domain)
          Result.PCLK2 := Result.HCLK / D2PPRE2_Div;  -- APB2 (D2 domain)
-         Result.PCLK3 := Result.HCLK / D1PPRE_Div;   -- APB3 (D1 domain)
-         Result.PCLK4 := Result.HCLK / D3PPRE_Div;   -- APB4 (D3 domain)
 
          --  Timer clocks
          --  If APB prescaler is 1, timer clock = PCLKx

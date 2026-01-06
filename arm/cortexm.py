@@ -891,8 +891,6 @@ class Stm32CommonArchSupport(ArchSupport):
             "arm/stm32/start-rom.S",
             "arm/stm32/start-ram.S",
             "arm/stm32/start-common.S",
-            "arm/stm32/setup_pll.adb",
-            "arm/stm32/setup_pll.ads",
         )
 
 
@@ -1066,18 +1064,38 @@ class Stm32(ArmV7MTarget):
 
         if self.mcu in ["stm32f40x"]:
             self.add_gnat_source("arm/stm32/stm32f40x/s-stm32.adb")
+            self.add_gnat_sources(
+                "arm/stm32/setup_pll.ads",
+                "arm/stm32/setup_pll.adb",
+            )
 
         elif self.mcu in ["stm32f401"]:
             self.add_gnat_source("arm/stm32/stm32f401/s-stm32.adb")
+            self.add_gnat_sources(
+                "arm/stm32/setup_pll.ads",
+                "arm/stm32/setup_pll.adb",
+            )
 
         elif self.mcu in ["stm32f429x", "stm32f469x"]:
             self.add_gnat_source("arm/stm32/stm32f429x/s-stm32.adb")
+            self.add_gnat_sources(
+                "arm/stm32/setup_pll.ads",
+                "arm/stm32/setup_pll.adb",
+            )
 
         elif self.mcu in ["stm32f7x", "stm32f7x9"]:
             self.add_gnat_source("arm/stm32/stm32f7x/s-stm32.adb")
+            self.add_gnat_sources(
+                "arm/stm32/setup_pll.ads",
+                "arm/stm32/setup_pll.adb",
+            )
 
         elif self.mcu in ["stm32h7x"]:
             self.add_gnat_source("arm/stm32/stm32h7x/s-stm32.adb")
+            self.add_gnat_sources(
+                "arm/stm32/stm32h7x/setup_pll.ads",
+                "arm/stm32/stm32h7x/setup_pll.adb",
+            )
 
         # tasking support
         self.add_gnarl_sources(

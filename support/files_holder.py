@@ -104,8 +104,14 @@ class FilePair(object):
         elif src.split("/")[0] in ("hie", "libgnarl", "libgnat"):
             # BB-specific file in gnat/hie
             self._src = os.path.join(FilesHolder.gnatdir, src)
+            if not os.path.exists(self._src):
+                # Fallback: look in repository's src directory for hie files
+                if src.split("/")[0] == "hie":
+                    repo_src = fullpath(src)
+                    if os.path.exists(repo_src):
+                        self._src = repo_src
             assert os.path.exists(self._src), (
-                "Error: source file %s not found in gnat" % src
+                "Error: source file %s not found in gnat or repository" % src
             )
 
         else:

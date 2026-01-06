@@ -86,11 +86,13 @@ package System.STM32 is
 
    type PLL_Source is
      (PLL_SRC_HSI,
+      PLL_SRC_CSI,
       PLL_SRC_HSE)
-     with Size => 1;
+     with Size => 2;
 
    type SYSCLK_Source is
      (SYSCLK_SRC_HSI,
+      SYSCLK_SRC_CSI,
       SYSCLK_SRC_HSE,
       SYSCLK_SRC_PLL)
      with Size => 2;
@@ -168,13 +170,24 @@ package System.STM32 is
                                  when 2 | 4 | 6 | 8 => True,
                                  when others => False);
    subtype PLLQ_Range is Integer range 2 .. 15;
+   subtype PLLR_Range is Integer range 2 .. 7;
+
+   --  STM32H7-specific PLL ranges
+   subtype PLL1P_Range is Integer range 2 .. 128
+     with Static_Predicate => (case PLL1P_Range is
+                                 when 2 | 4 | 6 | 8 | 16 | 32 | 64 | 128 =>
+                                   True,
+                                 when others => False);
+   subtype PLLN_OUT_Range is Integer range 192_000_000 .. 960_000_000;
+   subtype PLLCLK_Range is Integer range 1 .. 480_000_000;
 
    subtype HSECLK_Range is Integer range   1_000_000 ..  26_000_000;
    subtype PLLIN_Range  is Integer range     950_000 ..   2_000_000;
    subtype PLLVC0_Range is Integer range 192_000_000 .. 432_000_000;
    subtype PLLOUT_Range is Integer range  24_000_000 .. 216_000_000;
-   subtype SYSCLK_Range is Integer range           1 .. 216_000_000;
-   subtype HCLK_Range   is Integer range           1 .. 216_000_000;
+   --  SYSCLK increased to 550 MHz for STM32H7 family support
+   subtype SYSCLK_Range is Integer range           1 .. 550_000_000;
+   subtype HCLK_Range   is Integer range           1 .. 550_000_000;
    subtype PCLK1_Range  is Integer range           1 ..  54_000_000;
    subtype PCLK2_Range  is Integer range           1 .. 108_000_000;
    subtype SPII2S_Range is Integer range           1 ..  37_500_000;
@@ -184,6 +197,10 @@ package System.STM32 is
 
    HSICLK : constant := 16_000_000;
    LSICLK : constant :=     32_000;
+
+   --  STM32H7-specific internal clocks
+   HSI_H7CLK : constant := 64_000_000;  -- STM32H7 HSI is 64 MHz
+   CSI_CLK   : constant :=  4_000_000;  -- STM32H7 CSI is 4 MHz
 
    MCU_ID : MCU_ID_Register with Volatile,
                                  Address => System'To_Address (16#E004_2000#);

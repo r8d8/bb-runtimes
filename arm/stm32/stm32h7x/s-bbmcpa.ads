@@ -35,7 +35,6 @@
 --  This package defines MCU parameters for the STM32H7x family
 
 with Interfaces.STM32;
-with Interfaces.STM32.PWR;
 
 package System.BB.MCU_Parameters is
    pragma No_Elaboration_Code_All;
@@ -53,7 +52,7 @@ private
 
    PWR_CR3_LDOEN : constant := 16#0002#;  --  Low Drop-out Regulator Enable
    PWR_CR3_BYPASS : constant := 16#0001#; --  Power Management Unit bypass
-   
+
    PWR_D3CR_VOS_Scale_3 : constant := 16#0000#;  --  VOS Scale 3
    PWR_D3CR_VOS_Scale_2 : constant := 16#0001#;  --  VOS Scale 2
    PWR_D3CR_VOS_Scale_1 : constant := 16#0002#;  --  VOS Scale 1

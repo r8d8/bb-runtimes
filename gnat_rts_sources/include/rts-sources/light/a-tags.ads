@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
---          Copyright (C) 1992-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 1992-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- This specification is derived from the Ada Reference Manual for use with --
 -- GNAT. The copyright notice above, and the license provisions that follow --
@@ -33,40 +33,49 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  This is the HI-E version of this file. It provides full object oriented
---  semantics (including dynamic dispatching and support for abstract
---  interface types), assuming that tagged types are declared at the library
---  level. Some functionality has been removed in order to simplify this
---  run-time unit. Compared to the full version of this package, the following
---  subprograms have been removed:
+--  Provides a subset of the *Ada.Tags* package defined by ARM 3.9
 
---     Internal_Tag, Register_Tag, Descendant_Tag, Is_Descendant_At_Same_Level:
+--  This is a simplified version of the language defined package ``Ada.Tags``
+--  in ARM 3.9. It provides full object oriented semantics (including dynamic
+--  dispatching and support for abstract interface types), assuming that tagged
+--  types are declared at the library level.
+--
+--  This package defines the structure of the dispatch table, plus the
+--  functions to retrieve the expanded name (a string containing the name of
+--  the tagged type), external tag (a string to be used in an external
+--  representation for the given tag), and parent tag (returns the tag of
+--  the parent type).
+--
+--  Some functionality has been removed in order to simplify this run-time
+--  unit. Compared to the full version of this package, the following
+--  subprograms have been removed:
+--
+--  -  Internal_Tag, Register_Tag, Descendant_Tag, Is_Descendant_At_Same_Level:
 --     These subprograms are used for cross-referencing the external and
 --     internal representation of tags. The implementation of these routines
---     was considered neither simple nor esential for this restricted run-time,
---     and hence these functions were removed.
-
---     Get_Entry_Index, Get_Offset_Index, Get_Prim_Op_Kind, Get_Tagged_Kind,
+--     was considered neither simple nor essential for this restricted
+--     run-time, and hence these functions were removed.
+--
+--  -  Get_Entry_Index, Get_Offset_Index, Get_Prim_Op_Kind, Get_Tagged_Kind,
 --     SSD, Set_Entry_Index, Set_Prim_Op_Kind, OSD: They are used with types
 --     that implement limited interfaces and are only invoked when there are
---     selective waits and ATC's where the trigger is a call to an interface
+--     selective waits and ATCs where the trigger is a call to an interface
 --     operation. These functions have been removed because selective waits
---     and ATC's are not supported by the restricted run-time.
-
---     Displace, IW_Membership, Offset_To_Top, Set_Dynamic_Offset_To_Top,
+--     and ATCs are not supported by the restricted run-time.
+--
+--  -  Displace, IW_Membership, Offset_To_Top, Set_Dynamic_Offset_To_Top,
 --     Base_Address, Register_Interface_Offset: They are used with extended
---     support for interface types that is not part of the zfp runtime
---     (membership test applied to interfaces, tagged types with variable
---     size components covering interfaces, explicit dereference through
---     access to interfaces, and unchecked deallocation through access to
---     interfaces).
-
---     The operations in this package provide the guarantee that all
---     dispatching calls on primitive operations of tagged types and
---     interfaces take constant time (in terms of source lines executed),
---     that is to say, the cost of these calls is independent of the number
---     of primitives of the type or interface, and independent of the number
---     of ancestors or interface progenitors that a tagged type may have.
+--     support for interface types that are not support by this runtime
+--     (membership test applied to interfaces, tagged types with variable size
+--     components covering interfaces, explicit dereference through access to
+--     interfaces, and unchecked deallocation through access to interfaces).
+--
+--  The operations in this package provide the guarantee that all
+--  dispatching calls on primitive operations of tagged types and
+--  interfaces take constant time (in terms of source lines executed),
+--  that is to say, the cost of these calls is independent of the number
+--  of primitives of the type or interface, and independent of the number
+--  of ancestors or interface progenitors that a tagged type may have.
 
 with System;
 with System.Storage_Elements;
@@ -78,51 +87,39 @@ package Ada.Tags is
 
    type Tag is private;
    pragma Preelaborable_Initialization (Tag);
+   --  The type Tag is a private type which gives access to the dispatch
+   --  table.
 
    No_Tag : constant Tag;
+   --  The deferred constant *No_Tag* is defined to represent a null value.
 
    function Expanded_Name (T : Tag) return String;
+   --  The expanded name is stored as a C string in the type specific data
+   --  record. This function returns the expanded tag name for ``T``.
+   --  If ``T`` is *No_Tag*, then *Tag_Error* is raised.
+   --  requirement: TaggedExpandedName
 
    function External_Tag (T : Tag) return String;
+   --  The external tag is stored as a C string in the type specific data
+   --  record. This function returns the external tag name for ``T``.
+   --  If ``T`` is *No_Tag*, then *Tag_Error* is raised.
+   --  requirement: TaggedExternalTag
 
    function Parent_Tag (T : Tag) return Tag;
    pragma Ada_05 (Parent_Tag);
+   --  The parent tag is the first entry in the ancestor table for a non-root
+   --  type. If ``T`` is the tag of a root type, this function returns
+   --  *No_Tag*; otherwise it returns the tag of its parent. If``T`` is
+   --  *No_Tag*, then *Tag_Error* is raised.
+   --  requirement: TaggedParentTag
 
    Tag_Error : exception;
+   --  The Tag_Error exception is raised whenever an invalid tag is given to
+   --  the subprograms defined in this package.
 
 private
-
-   --  Structure of the GNAT Primary Dispatch Table
-
-   --          +--------------------+
-   --          |    Predef_Prims ---------------------------> +------------+
-   --          +--------------------+                         |  table of  |
-   --          |Typeinfo_Ptr/TSD_Ptr --> Type Specific Data   | predefined |
-   --  Tag --> +--------------------+  +-------------------+  | primitives |
-   --          |      table of      |  | inheritance depth |  +------------+
-   --          :   primitive ops    :  +-------------------+
-   --          |      pointers      |  |   access level    |
-   --          +--------------------+  +-------------------+
-   --                                  |     alignment     |
-   --                                  +-------------------+
-   --                                  |   expanded name   |
-   --                                  +-------------------+
-   --                                  |   external tag    |
-   --                                  +-------------------+
-   --                                  |   hash table link |
-   --                                  +-------------------+
-   --                                  |   transportable   |
-   --                                  +-------------------+
-   --                                  | needs finalization|
-   --                                  +-------------------+
-   --                                  | table of          |
-   --                                  :    ancestor       :
-   --                                  |       tags        |
-   --                                  +-------------------+
-
-   --  The runtime information kept for each tagged type is separated into
-   --  three objects: the Dispatch Table of predefined primitives, the dispatch
-   --  table of user-defined primitives and the Type_Specific_Data record.
+   --  This section provides details of the *Tags* package implementation,
+   --  defined by Ada 2012 [ARM] 3.9.
 
    package SSE renames System.Storage_Elements;
 
@@ -136,22 +133,62 @@ private
    type Address_Array is array (Positive range <>) of Prim_Ptr;
 
    subtype Dispatch_Table is Address_Array (1 .. 1);
-   --  Used by GDB to identify the _tags and traverse the run-time structure
-   --  associated with tagged types. For compatibility with older versions of
-   --  gdb, its name must not be changed.
+   --  ``Dispatch_Table`` is used by GDB to identify the tags and traverse
+   --  the run-time structure associated with tagged types.
+   --  For compatibility with older versions of GDB, its name must not be
+   --  changed.
 
    type Tag is access all Dispatch_Table;
    pragma No_Strict_Aliasing (Tag);
-
    type Interface_Tag is access all Dispatch_Table;
+   --  The type *Tag* is a private access to the dispatch table.
+   --
+   --  Below is a representation of the structure of the GNAT Primary Dispatch
+   --  Table:
+   --
+   --  .. code-block:: text
+   --
+   --            +--------------------+
+   --            |    Predef_Prims ---------------------------> +------------+
+   --            +--------------------+                         |  table of  |
+   --            |Typeinfo_Ptr/TSD_Ptr --> Type Specific Data   | predefined |
+   --    Tag --> +--------------------+  +-------------------+  | primitives |
+   --            |      table of      |  | inheritance depth |  +------------+
+   --            :   primitive ops    :  +-------------------+
+   --            |      pointers      |  |   access level    |
+   --            +--------------------+  +-------------------+
+   --                                    |     alignment     |
+   --                                    +-------------------+
+   --                                    |   expanded name   |
+   --                                    +-------------------+
+   --                                    |   external tag    |
+   --                                    +-------------------+
+   --                                    |   hash table link |
+   --                                    +-------------------+
+   --                                    |   transportable   |
+   --                                    +-------------------+
+   --                                    | needs finalization|
+   --                                    +-------------------+
+   --                                    | table of          |
+   --                                    :    ancestor       :
+   --                                    |       tags        |
+   --                                    +-------------------+
+   --
+   --  The runtime information kept for each tagged type is separated into
+   --  three objects: the Dispatch Table of predefined primitives, the dispatch
+   --  table of user-defined primitives and the Type_Specific_Data record.
 
    No_Tag : constant Tag := null;
+   --  The constant *No_Tag* has the value null. Any uninitialized Tag value
+   --  will thus be equal to *No_Tag*.
 
    --  The expander ensures that Tag objects reference the Prims_Ptr component
    --  of the wrapper.
 
    type Tag_Ptr is access all Tag;
    pragma No_Strict_Aliasing (Tag_Ptr);
+   --  This is the actual content of the Tag, used by the compiler to generate
+   --  dispatching calls.
 
    type Offset_To_Top_Ptr is access all SSE.Storage_Offset;
    pragma No_Strict_Aliasing (Offset_To_Top_Ptr);
@@ -195,6 +232,13 @@ private
       --  Table of ancestor tags. Its size actually depends on the inheritance
       --  depth level of the tagged type.
    end record;
+   --  The components *Access_Level*, *HT_Link*, *Transportable* and
+   --  *Needs_Finalization* are not used by this runtime, and are present
+   --  only for compatibility with other runtimes.
+   --
+   --  The component *Alignment* contains the alignment of the tagged type.
+   --  The components *Expanded_Name* and *External_Tag* contain a string
+   --  representation of the tag, using a NUL-terminated C convention.
 
    type Type_Specific_Data_Ptr is access all Type_Specific_Data;
    pragma No_Strict_Aliasing (Type_Specific_Data_Ptr);

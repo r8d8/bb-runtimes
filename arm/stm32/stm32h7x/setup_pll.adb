@@ -103,7 +103,7 @@ procedure Setup_Pll is
    --  First divider DIVM1 to produce PLLCLKIN
 
    PLL1P_Value : constant := 2;  -- DIVP1 for system clock
-   
+
    PLL1N_Value : constant Integer :=
      (PLL1P_Value * Clock_Frequency) / PLLCLKIN;
    --  Compute DIVN1 to generate required frequency
@@ -229,7 +229,7 @@ procedure Setup_Pll is
       --  Configure domain clocks
       RCC_Periph.D1CFGR :=
         (HPRE   => To_AHB (AHB_PRE),   -- AHB prescaler
-         D1CPRE => To_AHB (AHB_PRE),   -- CPU prescaler  
+         D1CPRE => To_AHB (AHB_PRE),   -- CPU prescaler
          D1PPRE => To_APB (APB3_PRE),  -- APB3 prescaler
          others => <>);
 

@@ -6,7 +6,7 @@
 --                                                                          --
 --                                  S p e c                                 --
 --                                                                          --
---          Copyright (C) 1992-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 1992-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNARL is free software; you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -31,19 +31,17 @@
 
 --  This is the Ravenscar/HIE version of this package
 
---  This package provides necessary definitions to handle simple (i.e without
---  entries) protected objects.
+--  This package provides the compiler interface to expand simple (i.e without
+--  entries) protected objects into simpler run time calls. It provides types
+--  used by the compiler to expand protected object and subprograms that
+--  implement protected object locks.
 
 --  All the routines that handle protected objects with entries have been moved
 --  to two children: Entries and Operations. Note that Entries only contains
 --  the type declaration and the OO primitives. This is needed to avoid
 --  circular dependency.
 
---  This package is part of the high level tasking interface used by the
---  compiler to expand Ada 95 tasking constructs into simpler run time calls
---  (aka GNARLI, GNU Ada Run-time Library Interface)
-
---  Note: the compiler generates direct calls to this interface, via Rtsfind.
+--  The compiler generates direct calls to this interface, via Rtsfind.
 --  Any changes to this interface may require corresponding compiler changes
 --  in exp_ch9.adb and possibly exp_ch7.adb
 

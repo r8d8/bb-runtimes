@@ -8,7 +8,7 @@
 --                                                                          --
 --        Copyright (C) 1999-2002 Universidad Politecnica de Madrid         --
 --             Copyright (C) 2003-2005 The European Space Agency            --
---                     Copyright (C) 2003-2023, AdaCore                     --
+--                     Copyright (C) 2003-2025, AdaCore                     --
 --                                                                          --
 -- GNARL is free software; you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -65,11 +65,14 @@ package body System.BB.Interrupts is
    --  be aligned to the CPU specific alignment to hold the largest registers.
 
    Interrupt_Stacks : array (CPU) of Stack_Space;
-   pragma Linker_Section (Interrupt_Stacks, ".interrupt_stacks");
+   pragma Linker_Section (Interrupt_Stacks, ".noinit.interrupt_stacks");
    --  Array that contains the stack used for interrupts on each CPU.
    --
    --  The interrupt stacks are assigned a special section so the linker script
-   --  can put them at a specific place and avoid useless initialization.
+   --  can put them at a specific place and avoid useless initialization. The
+   --  ".noinit" in the name of the section ensures that the compiler sets the
+   --  appropriate flags for this object so that the linker script can place
+   --  this array in the bss section.
    --
    --  Having a separate interrupt stack (from user tasks stack) helps to
    --  reduce the memory footprint, as there is no need to reserve space for

@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---          Copyright (C) 1992-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 1992-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -69,12 +69,12 @@ package body Ada.Numerics.Generic_Complex_Types is
          --  their operands could overflow. Given that all operations on NaNs
          --  return false, the test can only be written thus.
 
-         if not (abs (X) <= R'Last) then
+         if not (abs X <= R'Last) then
             X := Scale**2 * ((Left.Re / Scale) * (Right.Re / Scale) -
                              (Left.Im / Scale) * (Right.Im / Scale));
          end if;
 
-         if not (abs (Y) <= R'Last) then
+         if not (abs Y <= R'Last) then
             Y := Scale**2 * ((Left.Re / Scale) * (Right.Im / Scale)
                            + (Left.Im / Scale) * (Right.Re / Scale));
          end if;
@@ -593,7 +593,7 @@ package body Ada.Numerics.Generic_Complex_Types is
       exception
          when Constraint_Error =>
             return
-              R (LLF (abs (X.Re))
+              R (LLF (abs X.Re)
                 * Sqrt (1.0 + (LLF (X.Im) / LLF (X.Re)) ** 2));
       end;
 
@@ -608,7 +608,7 @@ package body Ada.Numerics.Generic_Complex_Types is
       exception
          when Constraint_Error =>
             return
-              R (LLF (abs (X.Im))
+              R (LLF (abs X.Im)
                 * Sqrt (1.0 + (LLF (X.Re) / LLF (X.Im)) ** 2));
       end;
 
@@ -618,30 +618,30 @@ package body Ada.Numerics.Generic_Complex_Types is
 
       if Re2 = 0.0 then
          if X.Re = 0.0 then
-            return abs (X.Im);
+            return abs X.Im;
 
          elsif Im2 = 0.0 then
             if X.Im = 0.0 then
-               return abs (X.Re);
+               return abs X.Re;
 
             else
-               if abs (X.Re) > abs (X.Im) then
+               if abs X.Re > abs X.Im then
                   return
-                    R (LLF (abs (X.Re))
+                    R (LLF (abs X.Re)
                       * Sqrt (1.0 + (LLF (X.Im) / LLF (X.Re)) ** 2));
                else
                   return
-                    R (LLF (abs (X.Im))
+                    R (LLF (abs X.Im)
                       * Sqrt (1.0 + (LLF (X.Re) / LLF (X.Im)) ** 2));
                end if;
             end if;
 
          else
-            return abs (X.Im);
+            return abs X.Im;
          end if;
 
       elsif Im2 = 0.0 then
-         return abs (X.Re);
+         return abs X.Re;
 
       --  In all other cases, the naive computation will do
 

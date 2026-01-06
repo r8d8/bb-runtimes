@@ -6,7 +6,7 @@
 --                                                                          --
 --                                  B o d y                                 --
 --                                                                          --
---                     Copyright (C) 2001-2023, AdaCore                     --
+--                     Copyright (C) 2001-2025, AdaCore                     --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -30,6 +30,14 @@
 ------------------------------------------------------------------------------
 
 --  This is the Ravenscar version of this package
+
+--  ``Ada.Interrupts`` provides the definition of Interrupt IDs,
+--  the parameterless interrupt handler and subprograms to attach, detach and
+--  query handlers as defined by ARM C.3.2. Because the Ravenscar profile does
+--  not allow users to call these subprograms because of the restriction
+--  ``No_Dynamic_Attachment``, these subprograms raise will raise
+--  ``Program_Error`` unconditionally. In practise, these subprograms can
+--  never be called because the compiler checks for these calls.
 
 package body Ada.Interrupts is
 

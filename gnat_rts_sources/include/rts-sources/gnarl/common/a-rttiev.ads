@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
---           Copyright (C) 2005-2023, Free Software Foundation, Inc.        --
+--           Copyright (C) 2005-2025, Free Software Foundation, Inc.        --
 --                                                                          --
 -- This specification is derived from the Ada Reference Manual for use with --
 -- GNAT. The copyright notice above, and the license provisions that follow --
@@ -32,6 +32,11 @@
 -- Extensive contributions were provided by Ada Core Technologies Inc.      --
 --                                                                          --
 ------------------------------------------------------------------------------
+
+--  This package implements ``Real_Time.Timing_Events`` as defined by ARM D.15.
+--  It provides a private tagged type ``Timing_Event`` that allows a user
+--  provided handler to be called at a particular time; the event can also be
+--  cancelled.
 
 with System.BB.Timing_Events;
 

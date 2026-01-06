@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
---              Copyright (C) 2017-2023, Free Software Foundation, Inc.     --
+--              Copyright (C) 2017-2025, Free Software Foundation, Inc.     --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -28,6 +28,11 @@
 -- Extensive contributions were provided by Ada Core Technologies Inc.      --
 --                                                                          --
 ------------------------------------------------------------------------------
+
+--  This package defines types used for memory manipulation and conversion
+--  functions, and is used by ``System.Memory_Compare``,
+--  ``System.Memory_Move``, and ``System.Memory_Set``.
+
 package System.Memory_Types is
    pragma No_Elaboration_Code_All;
    pragma Preelaborate;

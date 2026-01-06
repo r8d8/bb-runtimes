@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
---                     Copyright (C) 1995-2023, AdaCore                     --
+--                     Copyright (C) 1995-2025, AdaCore                     --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -29,16 +29,14 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  A simple preelaborable subset of Text_IO capabilities
+--  This is the zfp version of GNAT.IO package.
 
---  A simple text I/O package that can be used for simple I/O functions in
---  user programs as required. This package is also preelaborated, unlike
---  Text_IO, and can thus be with'ed by preelaborated library units.
+--  A simple text I/O package for simple I/O functions in user programs as
+--  required. This package is also preelaborated, unlike ``Ada.Text_IO``, and
+--  can thus be with'ed by preelaborated library units.
 
---  Note that Data_Error is not raised by these subprograms for bad data.
---  If such checks are needed then the regular Text_IO package must be used.
-
---  This is the zfp version of GNAT.IO package
+--  Data_Error is not raised by these subprograms for bad data. If such checks
+--  are needed then the regular Text_IO package must be used.
 
 package GNAT.IO
 with

@@ -6,7 +6,7 @@
 --                                                                          --
 --                                  B o d y                                 --
 --                                                                          --
---                     Copyright (C) 2001-2023, AdaCore                     --
+--                     Copyright (C) 2001-2025, AdaCore                     --
 --                                                                          --
 -- GNARL is free software; you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -71,8 +71,10 @@ package body System.Task_Primitives.Operations is
    --  Procedure executed by an idle task
 
    Idle_Stack_Size : constant System.Storage_Elements.Storage_Count :=
-     (2048 / Standard'Maximum_Alignment) * Standard'Maximum_Alignment;
-   --  2 KB stacks for each of the idle tasks
+     (System.Storage_Elements.Storage_Count
+       (Size_Type'Max (2048, Minimum_Stack_Size)) / Standard'Maximum_Alignment)
+     * Standard'Maximum_Alignment;
+   --  Minimum stack size or at least 2 KB stack for each of the idle tasks
 
    type Idle_Stack_Space is
      new Storage_Elements.Storage_Array (1 .. Idle_Stack_Size);

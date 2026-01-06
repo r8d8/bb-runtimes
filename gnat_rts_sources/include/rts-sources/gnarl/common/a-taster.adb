@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---         Copyright (C) 2005-2023, Free Software Foundation, Inc.          --
+--         Copyright (C) 2005-2025, Free Software Foundation, Inc.          --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -37,17 +37,10 @@
 --  the Ravenscar profile and the restricted exception support does not
 --  include Exception_Occurrence).
 
-with System.Tasking;
---  used for Task_Id
---           Self
---           Fall_Back_Handler
+with Ada.Unchecked_Conversion;
 
 with System.Task_Primitives.Operations;
---  Used for Self
---           Set_Priority
---           Get_Priority
-
-with Ada.Unchecked_Conversion;
+with System.Tasking;
 
 package body Ada.Task_Termination is
 

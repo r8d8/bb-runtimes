@@ -12,6 +12,10 @@
         "riscv32",
         "riscv64"
       ],
+      "Has_CHERI": [
+        "no",
+        "yes"
+      ],
       "RTS_Profile": [
         "light",
         "light-tasking",
@@ -68,6 +72,16 @@
       "CPU_Family:x86_64": {
         "_srcs": [
           "../../include/rts-sources/gnarl/spinlock-gcc"
+        ]
+      },
+      "Has_CHERI:no": {
+        "_srcs": [
+          "../../include/rts-sources/gnarl/common-no-cheri"
+        ]
+      },
+      "Has_CHERI:yes": {
+        "_srcs": [
+          "../../include/rts-sources/gnarl/common-cheri"
         ]
       },
       "RTS_Profile:embedded": {
@@ -151,10 +165,6 @@
         "no",
         "yes"
       ],
-      "Add_Image_Based_Int": [
-        "no",
-        "yes"
-      ],
       "Add_Image_Char": [
         "no",
         "yes"
@@ -179,10 +189,6 @@
         "no",
         "yes"
       ],
-      "Add_Image_LLL_Based_Int": [
-        "no",
-        "yes"
-      ],
       "Add_Image_LLL_Decimal": [
         "no",
         "yes"
@@ -192,10 +198,6 @@
         "yes"
       ],
       "Add_Image_LLL_Int": [
-        "no",
-        "yes"
-      ],
-      "Add_Image_LL_Based_Int": [
         "no",
         "yes"
       ],
@@ -325,6 +327,10 @@
         "no",
         "yes"
       ],
+      "Compiler_Backend": [
+        "gcc",
+        "llvm"
+      ],
       "Has_CHERI": [
         "no",
         "yes"
@@ -434,11 +440,6 @@
           "../../include/rts-sources/ioexce"
         ]
       },
-      "Add_Image_Based_Int:yes": {
-        "_srcs": [
-          "../../include/rts-sources/image/based_int"
-        ]
-      },
       "Add_Image_Char:yes": {
         "_srcs": [
           "../../include/rts-sources/image/char"
@@ -469,11 +470,6 @@
           "../../include/rts-sources/image/int"
         ]
       },
-      "Add_Image_LLL_Based_Int:yes": {
-        "_srcs": [
-          "../../include/rts-sources/image/based_int_lll"
-        ]
-      },
       "Add_Image_LLL_Decimal:yes": {
         "_srcs": [
           "../../include/rts-sources/image/decimal_lll"
@@ -487,11 +483,6 @@
       "Add_Image_LLL_Int:yes": {
         "_srcs": [
           "../../include/rts-sources/image/int_lll"
-        ]
-      },
-      "Add_Image_LL_Based_Int:yes": {
-        "_srcs": [
-          "../../include/rts-sources/image/based_int_ll"
         ]
       },
       "Add_Image_LL_Decimal:yes": {
@@ -1034,6 +1025,11 @@
           ]
         },
         "CPU_Family:aarch64": {
+          "Compiler_Backend:gcc": {
+            "_srcs": [
+              "../../include/rts-sources/full/zcx-dw2-gcc"
+            ]
+          },
           "_srcs": [
             "../../include/rts-sources/full/zcx-dw2",
             "../../include/rts-sources/full/zcx-aarch64"
@@ -1045,44 +1041,84 @@
           ]
         },
         "CPU_Family:leon": {
+          "Compiler_Backend:gcc": {
+            "_srcs": [
+              "../../include/rts-sources/full/zcx-dw2-gcc"
+            ]
+          },
           "_srcs": [
             "../../include/rts-sources/full/zcx-leon",
             "../../include/rts-sources/full/zcx-dw2"
           ]
         },
         "CPU_Family:powerpc": {
+          "Compiler_Backend:gcc": {
+            "_srcs": [
+              "../../include/rts-sources/full/zcx-dw2-gcc"
+            ]
+          },
           "_srcs": [
             "../../include/rts-sources/full/zcx-ppc",
             "../../include/rts-sources/full/zcx-dw2"
           ]
         },
         "CPU_Family:powerpc64": {
+          "Compiler_Backend:gcc": {
+            "_srcs": [
+              "../../include/rts-sources/full/zcx-dw2-gcc"
+            ]
+          },
           "_srcs": [
             "../../include/rts-sources/full/zcx-dw2"
           ]
         },
         "CPU_Family:riscv32": {
+          "Compiler_Backend:gcc": {
+            "_srcs": [
+              "../../include/rts-sources/full/zcx-dw2-gcc"
+            ]
+          },
           "_srcs": [
             "../../include/rts-sources/full/zcx-riscv",
             "../../include/rts-sources/full/zcx-dw2"
           ]
         },
         "CPU_Family:riscv64": {
+          "Compiler_Backend:gcc": {
+            "_srcs": [
+              "../../include/rts-sources/full/zcx-dw2-gcc"
+            ]
+          },
           "_srcs": [
             "../../include/rts-sources/full/zcx-riscv",
             "../../include/rts-sources/full/zcx-dw2"
           ]
         },
         "CPU_Family:x86": {
+          "Compiler_Backend:gcc": {
+            "_srcs": [
+              "../../include/rts-sources/full/zcx-dw2-gcc"
+            ]
+          },
           "_srcs": [
             "../../include/rts-sources/full/zcx-x86",
             "../../include/rts-sources/full/zcx-dw2"
           ]
         },
         "CPU_Family:x86_64": {
+          "Compiler_Backend:gcc": {
+            "_srcs": [
+              "../../include/rts-sources/full/zcx-dw2-gcc"
+            ]
+          },
           "_srcs": [
             "../../include/rts-sources/full/zcx-x86_64",
             "../../include/rts-sources/full/zcx-dw2"
+          ]
+        },
+        "Compiler_Backend:gcc": {
+          "_srcs": [
+            "../../include/rts-sources/full/gcc"
           ]
         },
         "Has_CHERI:no": {
@@ -1268,5 +1304,5 @@
       ]
     }
   },
-  "version": "25"
+  "version": "26"
 }

@@ -6,7 +6,7 @@
 --                                                                          --
 --                                  S p e c                                 --
 --                                                                          --
---                     Copyright (C) 1998-2023, AdaCore                     --
+--                     Copyright (C) 1998-2025, AdaCore                     --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -29,32 +29,34 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  This package provides an optimized version of Protected_Objects.Operations
---  and Protected_Objects.Entries making the following assumptions:
+--  This package provides the compiler interface to expand protected objects
+--  with only a single entry into simpler run-time calls. It provides types
+--  used by the compiler to expand protected object and routines used by the
+--  compiler to implement the dynamic semantics.
 
---    PO have only one entry
---    There is only one caller at a time (No_Entry_Queue)
---    There is no dynamic priority support (No_Dynamic_Priorities)
---    No Abort Statements
---      (No_Abort_Statements, Max_Asynchronous_Select_Nesting => 0)
---    PO are at library level
---    None of the tasks will terminate (no need for finalization)
---    No timed or conditional entry calls
---    No exception handlers allowed
-
+--  The package is an optimized version of the general protected objects with
+--  entries interface (``Protected_Objects.Operations`` and
+--  ``Protected_Objects.Entries``). It makes the following assumptions:
+--
+--    - PO have only one entry
+--    - There is only one caller at a time (No_Entry_Queue)
+--    - There is no dynamic priority support (No_Dynamic_Priorities)
+--    - No Abort Statements
+--    - (No_Abort_Statements, Max_Asynchronous_Select_Nesting => 0)
+--    - PO are at library level
+--    - None of the tasks will terminate (no need for finalization)
+--    - No timed or conditional entry calls
+--    - No exception handlers allowed
+--
 --  This interface is intended to be used in the Ravenscar profile, the
 --  compiler is responsible for ensuring that the conditions mentioned above
 --  are respected, except for the No_Entry_Queue restriction that is checked
 --  dynamically in this package, since the check cannot be performed at compile
 --  time, and is relatively cheap (see body).
 
---  This package is part of the high level tasking interface used by the
---  compiler to expand Ada 95 tasking constructs into simpler run time calls
---  (aka GNARLI, GNU Ada Run-time Library Interface)
-
---  Note: the compiler generates direct calls to this interface, via Rtsfind.
---  Any changes to this interface may require corresponding compiler changes
---  in exp_ch9.adb and possibly exp_ch7.adb
+--  The compiler generates direct calls to this interface, via Rtsfind. Any
+--  changes to this interface may require corresponding compiler changes in
+--  exp_ch9.adb and possibly exp_ch7.adb.
 
 package System.Tasking.Protected_Objects.Single_Entry is
    pragma Elaborate_Body;

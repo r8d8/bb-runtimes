@@ -6,7 +6,7 @@
 --                                                                          --
 --                                  S p e c                                 --
 --                                                                          --
---          Copyright (C) 1992-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 1992-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNARL is free software; you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -29,8 +29,13 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  This package contains all extended primitives related to Protected_Objects
---  with entries. This is the implementation for the light-tasking runtime.
+--  This is the light tasking implementation
+
+--  This package provides the compiler interface to expand protected objects
+--  with entries into simpler run time calls, specifically subprograms used
+--  to service protected entries. To break circular dependencies in the run-
+--  time, the non-entry related interface is provided in the
+--  :ref:`System.Tasking.Protected_Objects.Entries` package.
 
 --  The handling of protected objects with no entries is done in
 --  System.Tasking.Protected_Objects, the simple routines for protected
@@ -38,8 +43,8 @@
 --  split between Entries and Operations is needed to break circular
 --  dependencies inside the run time.
 
---  Note: the compiler generates direct calls to this interface, via Rtsfind.
---  Any changes to this interface may require corresponding compiler changes.
+--  The compiler generates direct calls to this interface, via Rtsfind. Any
+--  changes to this interface may require corresponding compiler changes.
 
 with System.Tasking.Protected_Objects.Entries;
 

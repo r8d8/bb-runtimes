@@ -6,7 +6,7 @@
 --                                                                          --
 --                                  S p e c                                 --
 --                                                                          --
---          Copyright (C) 1992-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 1992-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNARL is free software; you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -29,18 +29,20 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  This package contains all simple primitives related to Protected_Objects
---  with entries (i.e init, lock, unlock).
+--  This is the light tasking implementation
+
+--  This package provides the compiler interface to expand protected objects
+--  with entries into simpler run time calls. It provides types used by the
+--  compiler to expand protected objects with entries and subprograms that
+--  implement protected object locks. To break circular dependencies in the
+--  run-time, protected object entry operations are located in the
+--  :ref:`System.Tasking.Protected_Objects.Operations` package.
 
 --  The handling of protected objects with no entries is done in
---  System.Tasking.Protected_Objects, the complex routines for protected
---  objects with entries in System.Tasking.Protected_Objects.Operations.
+--  System.Tasking.Protected_Objects
 
---  The split between Entries and Operations is needed to break circular
---  dependencies inside the run time.
-
---  Note: the compiler generates direct calls to this interface, via Rtsfind.
---  Any changes to this interface may require corresponding compiler changes.
+--  The compiler generates direct calls to this interface, via Rtsfind. Any
+--  changes to this interface may require corresponding compiler changes.
 
 with Ada.Unchecked_Conversion;
 

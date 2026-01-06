@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
---          Copyright (C) 2003-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 2003-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -691,7 +691,6 @@ is
      (Left  : Super_String;
       Right : Super_String) return Boolean
    with
-     Pre    => Left.Max_Length = Right.Max_Length,
      Post   => "="'Result = (Super_To_String (Left) = Super_To_String (Right)),
      Global => null;
 
@@ -855,8 +854,8 @@ is
                       then J <= Super_Index'Result - 1
                       else J - 1 in Super_Index'Result
                                     .. Super_Length (Source) - Pattern'Length)
-                  then not (Search.Match
-                    (Super_To_String (Source), Pattern, Mapping, J)))),
+                  then not Search.Match
+                    (Super_To_String (Source), Pattern, Mapping, J))),
 
         --  Otherwise, 0 is returned
 
@@ -909,8 +908,8 @@ is
                       then J <= Super_Index'Result - 1
                       else J - 1 in Super_Index'Result
                                     .. Super_Length (Source) - Pattern'Length)
-                  then not (Search.Match
-                    (Super_To_String (Source), Pattern, Mapping, J)))),
+                  then not Search.Match
+                    (Super_To_String (Source), Pattern, Mapping, J))),
 
         --  Otherwise, 0 is returned
 
@@ -1015,8 +1014,8 @@ is
                       then J in From .. Super_Index'Result - 1
                       else J - 1 in Super_Index'Result
                                     .. From - Pattern'Length)
-                  then not (Search.Match
-                    (Super_To_String (Source), Pattern, Mapping, J)))),
+                  then not Search.Match
+                    (Super_To_String (Source), Pattern, Mapping, J))),
 
         --  Otherwise, 0 is returned
 
@@ -1078,8 +1077,8 @@ is
                       then J in From .. Super_Index'Result - 1
                       else J - 1 in Super_Index'Result
                                     .. From - Pattern'Length)
-                  then not (Search.Match
-                    (Super_To_String (Source), Pattern, Mapping, J)))),
+                  then not Search.Match
+                    (Super_To_String (Source), Pattern, Mapping, J))),
 
         --  Otherwise, 0 is returned
 

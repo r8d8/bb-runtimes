@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
---          Copyright (C) 2001-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 2001-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -29,17 +29,14 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  This package provides the low level memory allocation and deallocation
+--  mechanisms used by GNAT. It exports __gnat_malloc and __gnat_free symbols
+--  that are used by compiler generated code. It provides a signal storage pool
+--  and implements the storage management semantics required by ARM 13.11.
+
 --  This is a simplified version of this package, for use with a configurable
---  run-time library that does not provide Ada tasking. It does not provide
---  any deallocation routine.
-
---  This package provides the low level memory allocation/deallocation
---  mechanisms used by GNAT.
-
---  To provide an alternate implementation, simply recompile the modified
---  body of this package with gnatmake -u -a -g s-memory.adb and make sure
---  that the ali and object files for this unit are found in the object
---  search path.
+--  run-time library. Depending on the target, free may be
+--  implemented as a no-op.
 
 --  This unit may be used directly from an application program by providing
 --  an appropriate WITH, and the interface can be expected to remain stable.

@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
---          Copyright (C) 2011-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 2011-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -30,7 +30,7 @@
 ------------------------------------------------------------------------------
 
 --  This package defines the console I/O interface for the simplified version
---  of Ada.Text_IO used in ZFP runtimes or bare board platforms.
+--  of ``Ada.Text_IO`` used in embedded systems with limited I/O capabilities.
 
 package System.Text_IO is
    pragma No_Elaboration_Code_All;

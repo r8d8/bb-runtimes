@@ -6,7 +6,7 @@
 --                                                                          --
 --                                  B o d y                                 --
 --                                                                          --
---                     Copyright (C) 2001-2023, AdaCore                     --
+--                     Copyright (C) 2001-2025, AdaCore                     --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -29,9 +29,14 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  This package provides the high level interface for accessing the
+--  ``delay until`` functionality, using low-level primitives. The compiler
+--  generates direct calls to this interface.
+--
+--  This package has been specifically tailored to meet the Ravenscar Profile
+--  restrictions on all Ravenscar targets.
+
 with System.Task_Primitives.Operations;
---  Used for Timed_Delay
---           Self
 
 package body Ada.Real_Time.Delays is
 

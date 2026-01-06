@@ -8,7 +8,7 @@
 --                                                                          --
 --        Copyright (C) 1999-2002 Universidad Politecnica de Madrid         --
 --             Copyright (C) 2003-2005 The European Space Agency            --
---                     Copyright (C) 2003-2023, AdaCore                     --
+--                     Copyright (C) 2003-2025, AdaCore                     --
 --                                                                          --
 -- GNARL is free software; you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -34,7 +34,129 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  Package that implements basic tasking functionalities
+--  This package is the central component of the executive architecture. The
+--  operations related to the basic tasking functionality are defined here.
+--
+--  There is a procedure which initializes the thread environment, called
+--  ``Initialize``, that must be called before any other executive
+--  operation. Its purpose is to initialize the ready queue, inserting the
+--  ``Environment_Thread`` within that queue. The ``Environment_Thread`` is
+--  the thread which executes the environment code, that is, the main
+--  procedure. Likewise, ``Initialize_Slave_Environment`` initializes a thread
+--  for a secondary processor.
+--
+--  The types used for identifying a thread (``Thread_Id``) and storing the
+--  information about a thread (``Thread_Descriptor``) are defined in this
+--  package. The former is internally implemented as a pointer to the
+--  latter. The ``Thread_Descriptor`` is a private record which contains the
+--  following fields:
+--
+--  -  ``ATCB.`` The address of the ``Ada Task Control Block`` associated with
+--     the thread. The ATCB structure is described in detail in
+--     ``System.Tasking``. This field allows GNARL to ask the executive about
+--     the Ada task that is executing at any time.
+--
+--  -  ``Context.`` The space to save the hardware context (stack pointer,
+--     program counter, etc.) of the thread when it was last preempted.
+--
+--  -  ``Base_CPU.`` The cpu on which the thread is executed.
+--
+--  -  ``Base_Priority.`` The base priority of the thread. This priority
+--     corresponds to the priority of the thread when it was created, and
+--     does not change along the lifetime of the thread because the
+--     Ravenscar profile does not allow it. The task executes at this
+--     priority when it is not executing any protected action.
+--
+--  -  ``Active_Priority.`` The active priority of the thread. Active
+--     priority differs from the base priority due to dynamic priority
+--     changes caused by the ceiling locking policy. The task executes at
+--     this priority when it is executing a protected action, and the
+--     priority value is the ceiling priority of the corresponding protected
+--     object.
+--
+--  -  ``Top_Of_Stack.`` The address of the top of the stack that will be
+--     used by this thread. This information is needed for checking stack
+--     overflow at run time.
+--
+--  -  ``Bottom_Of_Stack.`` The address of the bottom of the stack that will
+--     be used by this thread. This information is needed for checking stack
+--     overflow at run time.
+--
+--  -  ``Next.`` Pointer to the next ready thread. If the thread is neither
+--     ready nor running this pointer is null.
+--
+--  -  ``Alarm_Time.`` The time when the alarm for this thread expires. If
+--     the thread has not a pending alarm the value of this field is set to
+--     the maximum time value.
+--
+--  -  ``Next_Alarm.`` Pointer to the next thread within the alarm queue.
+--     The queue is ordered by its absolute expiration time. The first place
+--     within this list is occupied by the task with the nearest alarm to
+--     expire.
+--
+--  -  ``State.`` Encodes some basic information about the state of a thread
+--     (``Runnable``, ``Suspended``, or ``Delayed``).
+--
+--  -  ``In_Interrupt.``  Set when the task is being interrupted.
+--
+--  -  ``Wakeup_Signaled.`` Variable which reflects whether another thread
+--     has performed a ``Wakeup`` operation on the thread.
+--
+--  -  ``Global_List.`` Used to keep a list, ordered by creation time, of
+--     all threads in the system.
+--
+--  -  ``Execution_Time.``  Used to store the cpu time spent on the thread.
+--
+--  The operations defined in this package that can be performed on a thread
+--  are:
+--
+--  -  Creation (``Thread_Create``). This procedure returns the identifier
+--     of the new thread. The data that must be passed to the procedure are
+--     the code and argument of the procedure to be executed by the thread
+--     (passed as ``System.Address``), the priority of the thread and the
+--     stack size for this thread.
+--
+--  -  Identification (``Thread_Self``). There is a function to query the
+--     identifier of the currently executing thread.
+--
+--  -  Setting the priority (``Set_Priority``). This procedure allows the
+--     currently executing thread to set its active priority to the given
+--     value. Threads cannot change other thread's priorities. The Ravenscar
+--     profile does not allow any form of dynamic priority changes other
+--     than caused by the ceiling locking policy.
+--
+--  -  Getting the priority (``Get_Priority``). There is a function to query
+--     the current active priority of any thread.
+--
+--  -  Getting the CPU (``Get_CPU``) and the affinity (``Get_Affinity``) of
+--     a thread.
+--
+--  -  Suspension (``Sleep``). The calling thread is unconditionally
+--     suspended.
+--
+--  -  Resumption (``Wakeup``). The referred thread becomes ready (the
+--     thread must be previously suspended).
+--
+--  -  Setting the ATCB (``Set_ATCB``). The GNULL layer needs to store
+--     within each thread descriptor the pointer to the
+--     ``Ada Task Control Block`` associated with every thread. This procedure
+--     stores the given pointer to the ``Ada Task Control Block`` within the
+--     thread descriptor.
+--
+--  -  Getting the ATCB (``Get_ATCB``). This function returns the
+--     ``Ada Task Control Block`` associated with the currently executing
+--     thread, and is used for an efficient implementation of the ``Self``
+--     function required by GNULL.
+--
+--  Calls to ``Set_Priority``, which can only be motivated by calls to
+--  protected operations (including interrupt handlers), are scheduling
+--  events when decreasing the priority. Calls to ``Sleep`` are also
+--  scheduling events because the running task is removed from the
+--  processor. Note that ``Wakeup`` is not a scheduling point. If a task is
+--  inserted in the ready queue after a call to ``Wakeup``, the
+--  corresponding scheduling event comes later when the task that inserted
+--  it decreases its priority calling ``Set_Priority`` (calls to Wakeup
+--  occur only within protected procedures).
 
 pragma Restrictions (No_Elaboration_Code);
 

@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
---          Copyright (C) 2005-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 2005-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- This specification is derived from the Ada Reference Manual for use with --
 -- GNAT. The copyright notice above, and the license provisions that follow --
@@ -17,13 +17,14 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  This is a simplified version of this package to be used in when the
---  Ravenscar profile and there are no exception handlers present (either of
---  the restrictions No_Exception_Handlers or No_Exception_Propagation are in
---  effect). This means that the only task termination cause that need to be
---  taken into account is normal task termination (abort is not allowed by
---  the Ravenscar profile and the restricted exception support does not
---  include Exception_Occurrence).
+--  This is a simplified version of ``Ada.Task_Termination`` as defined by ARM
+--  C.7.3 to be used when the Ravenscar profile is active and there are no
+--  exception handlers present (either of the restrictions
+--  No_Exception_Handlers or No_Exception_Propagation are in effect). This
+--  means that the only task termination cause that needs to be taken into
+--  account is normal task termination (abort is not allowed by the Ravenscar
+--  profile and the restricted exception support does not include
+--  Exception_Occurrence).
 
 with Ada.Task_Identification;
 

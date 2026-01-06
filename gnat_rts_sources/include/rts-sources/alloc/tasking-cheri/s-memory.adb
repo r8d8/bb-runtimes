@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---          Copyright (C) 2001-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 2001-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -60,7 +60,7 @@ package body System.Memory is
    --  than __heap_end to ensure that the capability's bounds are precisely
    --  representable.
 
-   Top : Address;
+   Top : aliased Address;
    --  First not used address (always aligned to the maximum alignment)
 
    procedure Initialize with
@@ -128,10 +128,12 @@ package body System.Memory is
 
    function Alloc (Size : size_t) return System.Address
    is
+      type Address_Access is access all Address;
+
       pragma Warnings (Off);
       function Atomic_Compare_Exchange
-        (Ptr           : Address;
-         Expected      : Address;
+        (Ptr           : Address_Access;
+         Expected      : Address_Access;
          Desired       : Address;
          Weak          : Boolean   := False;
          Success_Model : Mem_Model := Seq_Cst;
@@ -145,7 +147,7 @@ package body System.Memory is
       Max_Align  : constant := Standard'Maximum_Alignment;
       Max_Size   : Storage_Count;
       Res        : Address;
-      Old_Top    : Address;
+      Old_Top    : aliased Address;
 
    begin
       if Size = 0 then
@@ -201,8 +203,8 @@ package body System.Memory is
          --  Update the top of the heap.
 
          exit when Atomic_Compare_Exchange
-           (Top'Address,
-            Expected => Old_Top'Address,
+           (Top'Access,
+            Expected => Old_Top'Access,
             Desired  => Res + Max_Size);
       end loop;
 

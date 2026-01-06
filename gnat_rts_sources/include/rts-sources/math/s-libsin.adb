@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---         Copyright (C) 2014-2023, Free Software Foundation, Inc.          --
+--         Copyright (C) 2014-2025, Free Software Foundation, Inc.          --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -101,7 +101,7 @@ package body System.Libm_Single is
      (X         : Float;
       Reduced_X : out Float;
       P         : out Integer)
-     with Post => abs (Reduced_X) < 0.044;
+     with Post => abs Reduced_X < 0.044;
 
    function Reduce_1_16 (X : Float) return Float
      with Post => abs (X - Reduce_1_16'Result) <= 0.0625;
@@ -125,18 +125,18 @@ package body System.Libm_Single is
    --  The result should be correctly rounded
 
    procedure Reduce_Ln_2    (X : in out Float; N : out Integer)
-     with Pre  => abs (X) <= Float'Ceiling
+     with Pre  => abs X <= Float'Ceiling
        (Float'Pred (88.72283_90520_7) * Inv_Ln_2);
    --  @llr Reduce_Ln_2 Float
    --  The following is postcondition doesn't hold. Suspicious "=" ???
-   --  Post => abs (X) <= Ln_2 / 2.0 and
+   --  Post => abs X <= Ln_2 / 2.0 and
    --          X'Old = X + Float (N) * Ln_2;
 
    --  The reduction is used by the Sin, Cos and Tan functions.
 
    procedure Reduce_Half_Pi (X : in out Float; Q : out Quadrant)
      with Pre  => X >= 0.0,
-          Post => abs (X) <= Max_Red_Trig_Arg;
+          Post => abs X <= Max_Red_Trig_Arg;
    --  @llr Reduce_Half_Pi Float
    --  The following functions reduce a positive X into the range
    --  -(Pi/4 + E) .. Pi/4 + E, with E a small fraction of Pi.
@@ -431,7 +431,7 @@ package body System.Libm_Single is
 
       --  Math based implementation using Hart constants
 
-      Y      : F := abs (X);
+      Y      : F := abs X;
       Q      : Quadrant;
       Result : F;
 
@@ -455,7 +455,7 @@ package body System.Libm_Single is
 
       --  Cody and Waite implementation (page 217)
 
-      Y : constant F := abs (X);
+      Y : constant F := abs X;
 
       --  Because the overflow threshold for cosh(X) is beyond the overflow
       --  threshold for exp(X), it appears natural to reformulate the
@@ -522,7 +522,7 @@ package body System.Libm_Single is
 
    begin
 
-      if abs (Y) < 2.0**(-F'Machine_Mantissa - 1) then
+      if abs Y < 2.0**(-F'Machine_Mantissa - 1) then
          return 1.0;
       end if;
 
@@ -551,7 +551,7 @@ package body System.Libm_Single is
       Result : F;
 
    begin
-      if abs (Y) < 2.0**(-F'Machine_Mantissa - 1) then
+      if abs Y < 2.0**(-F'Machine_Mantissa - 1) then
          return 1.0;
       end if;
 
@@ -654,7 +654,7 @@ package body System.Libm_Single is
       --  the absolute value and remember the even/oddness of the exponent.
 
       One_Over_Sixteen : constant := 0.0625;
-      Abs_Left : constant F := abs (Left);
+      Abs_Left : constant F := abs Left;
 
       M : constant Integer := F'Exponent (Abs_Left);
       G : constant F       := F'Fraction (Abs_Left);
@@ -760,7 +760,7 @@ package body System.Libm_Single is
       --  Cody and Waite implementation (page 217)
 
       Sign : constant F := F'Copy_Sign (1.0, X);
-      Y    : constant F := abs (X);
+      Y    : constant F := abs X;
 
       --  Because the overflow threshold for sinh(X) is beyond the overflow
       --  threshold for exp(X), it appears natural to reformulate the
@@ -854,7 +854,7 @@ package body System.Libm_Single is
 
       --  Cody and Waite implementation (page 239)
 
-      Y      : constant F := abs (X);
+      Y      : constant F := abs X;
       Xbig   : constant := Ln_2 * F (1 + F'Machine_Mantissa);
       LN_3_2 : constant := 0.54930_61443_34054_84570;
       Result : F;

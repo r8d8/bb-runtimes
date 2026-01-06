@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
---          Copyright (C) 1999-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 1999-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -29,13 +29,12 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  This version is for the light* run-times and for bare board targets
+
 --  This package provides a method for generating a traceback of the current
 --  execution location. The traceback shows the locations of calls in the call
 --  chain, up to either the top or a designated number of levels.
 
---  This version is for the light* run-times and for bare board targets
-
---  Note:
 --  On some targets tracebacks cannot be implmented. In this case
 --  Call_Chain will return an empty Tracebacks_Array.
 --  The list currently includes:
@@ -59,22 +58,22 @@ package System.Traceback is
    --  Store up to Max_Len code locations in Traceback, corresponding to the
    --  current call chain.
    --
-   --    Traceback is an array of addresses where the result will be stored.
+   --  ``Traceback`` is an array of addresses where the result will be stored.
    --
-   --    Max_Len is the length of the Traceback array. If the call chain is
-   --    longer than this, then additional entries are discarded, and the
-   --    traceback is missing some of the highest level entries.
+   --  ``Max_Len`` is the length of the Traceback array. If the call chain is
+   --  longer than this, then additional entries are discarded, and the
+   --  traceback is missing some of the highest level entries.
    --
-   --    Len is the number of addresses returned in the Traceback array
+   --  ``Len`` is the number of addresses returned in the Traceback array
    --
-   --    Exclude_Min/Exclude_Max, if non null, provide a range of addresses
-   --    to ignore from the computation of the traceback.
+   --  ``Exclude_Min``/``Exclude_Max``, if non null, provide a range of
+   --  addresses to ignore from the computation of the traceback.
    --
-   --    Skip_Frames says how many of the most recent calls should at least
-   --    be excluded from the result, regardless of the exclusion bounds and
-   --    starting with this procedure itself: 1 means exclude the frame for
-   --    this procedure, 2 means 1 + exclude the frame for this procedure's
-   --    caller, ...
+   --  ``Skip_Frames`` says how many of the most recent calls should at least
+   --  be excluded from the result, regardless of the exclusion bounds and
+   --  starting with this procedure itself: 1 means exclude the frame for
+   --  this procedure, 2 means 1 + exclude the frame for this procedure's
+   --  caller, ...
    --
    --  On return, the Traceback array is filled in, and Len indicates the
    --  number of stored entries. The first entry is the most recent call,

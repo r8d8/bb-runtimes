@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---          Copyright (C) 1992-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 1992-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -66,6 +66,21 @@ package body System.Soft_Links is
       return Ada.Exceptions.Exception_Identity (Get_Current_Excep.all.all);
    end Get_GNAT_Exception;
 
+   -----------------------------
+   -- Save_Library_Occurrence --
+   -----------------------------
+
+   procedure Save_Library_Occurrence (E : EOA) is
+      use Ada.Exceptions;
+   begin
+      if not Library_Exception_Set then
+         Library_Exception_Set := True;
+         if E /= null then
+            Ada.Exceptions.Save_Occurrence (Library_Exception, E.all);
+         end if;
+      end if;
+   end Save_Library_Occurrence;
+
    -------------------
    -- Adafinal_Soft --
    -------------------
@@ -91,6 +106,26 @@ package body System.Soft_Links is
       --  (if any was installed).
 
    end Adafinal_Soft;
+
+   ----------------------
+   -- Acquire_RTS_Lock --
+   ----------------------
+
+   procedure Acquire_RTS_Lock_Soft (Addr : Address) is
+      pragma Unreferenced (Addr);
+   begin
+      Task_Lock_Soft;
+   end Acquire_RTS_Lock_Soft;
+
+   ----------------------
+   -- Release_RTS_Lock --
+   ----------------------
+
+   procedure Release_RTS_Lock_Soft (Addr : Address) is
+      pragma Unreferenced (Addr);
+   begin
+      Task_Unlock_Soft;
+   end Release_RTS_Lock_Soft;
 
    --------------------
    -- Task_Lock_Soft --

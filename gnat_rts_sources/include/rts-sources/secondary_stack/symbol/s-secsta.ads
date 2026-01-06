@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
---          Copyright (C) 1992-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 1992-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -30,6 +30,62 @@
 ------------------------------------------------------------------------------
 
 --  Version for use in HI-E mode
+
+--  This package implements the support for the secondary stack. By default,
+--  the run-time allows functions returning unconstrained objects such as
+--  unconstrained arrays or discriminated records without default
+--  initializations for discriminants. To implement this capability, the
+--  compiler generates references to a secondary stack mechanism that requires
+--  run-time support, which is implemented by this package.
+--
+--  The secondary stack is a contiguous memory block, whose boundaries and
+--  current pointer are stored in the Task Control Block for later
+--  retrieval. The secondary stack pointer is handled by increasing or
+--  decreasing it (the same way as a regular stack), verifying before each
+--  allocation that the top of the memory block is not overflown.
+--
+--  This package implements the routines to allocate and release secondary
+--  stack frames, and to obtain the current secondary stack pointer. There
+--  is also an initialization phase, where the memory blocks used as
+--  secondary stacks are allocated to the different tasks.
+--
+--  The secondary stacks are retrieved by calling
+--  ``__gnat_get_secondary_stack``, that can be implemented by user
+--  applications to allow flexibility in the storage of secondary stacks
+--  pointers. The default implementation for non-tasking applications is
+--  performed by ``System.Secondary_Stack.Single_Task`` while
+--  the ravenscar implementation is done by ``System.Tasking``.
+--
+--  In all cases, the binder will generate a default-sized secondary stack
+--  for the environment task if the secondary stack is used by the program
+--  being binded.
+--
+--  The default secondary stack size is specified in
+--  ``System.Parameters`` by ``Runtime_Default_Sec_Stack_Size``. This
+--  value is used for non-tasking applications, the environment task of
+--  multitasking applications and as a default value for tasks. It can be
+--  overridden by using the gnatbind switch ``-D``.
+--
+--  For example, to specify a default secondary stack size of 20kB:
+--
+--  ``gnatbind -D20k main.ali``
+--
+--  The default secondary stack size can be overridden on a per task basis if
+--  individual tasks have different secondary stack requirements. This is
+--  achieved through the ``Secondary_Stack_Size`` aspect that takes the size
+--  of the secondary stack in bytes. For example, to specify a 20KB secondary
+--  stack for the task ``A_Task``:
+--
+--  .. code-block:: ada
+--
+--    task A_Task with
+--      Secondary_Stack_Size => 20 * 1024;
+--
+--  In order to ensure safe and secure usage of the secondary stack, before
+--  allocating secondary stack frames a check is made to verify whether
+--  there is enough free space for the requested allocation, raising a
+--  *Storage_Error* exception otherwise. It precludes potential memory
+--  corruptions.
 
 with System.Parameters;
 with System.Storage_Elements;
@@ -122,6 +178,8 @@ private
       --  Memory for the secondary stack
    end record;
    pragma Annotate (Gnatcheck, Exempt_Off, "Discriminated_Records");
+   --  The full private view of SS_Stack: contains the secondary stack memory
+   --  space and its current bounds.
 
    type Mark_Id is new SS_Ptr;
    --  The stack pointer value corresponding to the top of the stack at the

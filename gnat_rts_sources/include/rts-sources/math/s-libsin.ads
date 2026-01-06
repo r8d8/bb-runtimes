@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
---          Copyright (C) 2014-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 2014-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -83,7 +83,7 @@ package System.Libm_Single is
    --
    --  C99 special values:
    --    Acos (1) = +0
-   --    Acos (x) = NaN if abs (x) > 1
+   --    Acos (x) = NaN if abs x > 1
    --
    --  Ada expected values:
    --    Acos (0)  = Pi/2.0 (tightly approximated)
@@ -129,7 +129,7 @@ package System.Libm_Single is
    --
    --  C99 special values:
    --    Asin (+-0) = +-0
-   --    Asin (x)   = NaN if abs (x) > 1
+   --    Asin (x)   = NaN if abs x > 1
    --
    --  Ada expected values:
    --    Asin (1)  = Pi/2.0 (tightly approximated)
@@ -248,7 +248,7 @@ package System.Libm_Single is
    --    Cos (+-INF) = NaN
    --
    --  Ada expected values:
-   --    abs (Cos (x)) <= 1
+   --    abs Cos (x) <= 1
    --
    --  @llr cos (Float) Accuracy
    --  The Cos function shall return the cosine of <X>
@@ -271,7 +271,7 @@ package System.Libm_Single is
    --    Cosh (+-INF) = +INF
    --
    --  Ada expected values:
-   --    abs (Cosh (x)) > 1
+   --    abs Cosh (x) > 1
    --
    --  @llr cosh (Float) Accuracy
    --  The Cosh function shall return the inverse cosine of <X>
@@ -406,10 +406,10 @@ package System.Libm_Single is
    --    Pow (1, y)      = 1 for any y, even a NaN
    --    Pow (x, +-0)    = 1 for any x, even a NaN
    --    Pow (x, y)  = NaN, if x < 0 and both x and y finite and not integer
-   --    Pow (x, -INF)   = +INF      if abs (x) < 1
-   --    Pow (x, -INF)   = +0        if abs (x) > 1
-   --    Pow (x, +INF)   = +0        if abs (x) < 1
-   --    Pow (x, +INF)   = +INF      if abs (x) > 1
+   --    Pow (x, -INF)   = +INF      if abs x < 1
+   --    Pow (x, -INF)   = +0        if abs x > 1
+   --    Pow (x, +INF)   = +0        if abs x < 1
+   --    Pow (x, +INF)   = +INF      if abs x > 1
    --    Pow (-INF, y)   = -0        if y < 0 and y an odd integer
    --    Pow (-INF, y)   = +0        if y < 0 and y not an odd integer
    --    Pow (-INF, y)   = -INF      if y > 0 and y an odd integer

@@ -6,7 +6,7 @@
 --                                                                          --
 --                                  S p e c                                 --
 --                                                                          --
---                     Copyright (C) 2001-2023, AdaCore                    --
+--                     Copyright (C) 2001-2025, AdaCore                    --
 --                                                                          --
 -- This specification is derived from the Ada Reference Manual for use with --
 -- GNAT. The copyright notice above, and the license provisions that follow --
@@ -34,6 +34,18 @@
 ------------------------------------------------------------------------------
 
 --  Ravenscar version of this package for generic bare board targets
+
+--  Package ``Ada.Real_Time`` provides basic definitions and operations related
+--  to the types defined ``Time`` and ``Time_Span`` as defined by ARM D.8. The
+--  types ``Time`` and ``Time_Span`` are implemented by the ``Duration`` type.
+--
+--  This package has been tailored to meet the Ravenscar Profile restrictions
+--  on Ravenscar targets. It provides arithmetic operations for the types
+--  ``Time`` and ``Time_Span``, and the function ``Clock`` to get the clock
+--  value.
+--
+--  This software layer provides the Ada abstraction for time handling and
+--  delays, using the services provided by lower layers.
 
 with System.OS_Interface;
 

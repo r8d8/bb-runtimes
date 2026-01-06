@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
---          Copyright (C) 1992-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 1992-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -57,6 +57,9 @@ package System.Soft_Links is
    type EO_Param_Proc is access procedure (Excep : EO);
    pragma Favor_Top_Level (EO_Param_Proc);
 
+   type Set_Address_Call is access procedure (Addr : Address);
+   pragma Favor_Top_Level (Set_Address_Call);
+
    type Get_EOA_Call is access function return EOA;
 
    --  Suppress checks on all these types, since we know the corresponding
@@ -64,6 +67,7 @@ package System.Soft_Links is
 
    pragma Suppress (Access_Check, No_Param_Proc);
    pragma Suppress (Access_Check, EO_Param_Proc);
+   pragma Suppress (Access_Check, Set_Address_Call);
    pragma Suppress (Access_Check, Get_EOA_Call);
 
    --  The following one is not related to tasking/no-tasking but to the
@@ -150,6 +154,35 @@ package System.Soft_Links is
    Task_Termination_Handler : EO_Param_Proc := Task_Termination_Soft'Access;
    --  Handle task termination routines (task/non-task case as appropriate)
 
+   ----------------------
+   -- Locking Soft-Links --
+   ----------------------
+
+   procedure Null_Set_Address (Addr : Address) is null;
+
+   procedure Acquire_RTS_Lock_Soft (Addr : Address);
+   pragma Inline (Acquire_RTS_Lock_Soft);
+   --  Acquire the RTS lock at Addr
+
+   procedure Release_RTS_Lock_Soft (Addr : Address);
+   pragma Inline (Release_RTS_Lock_Soft);
+   --  Release the RTS lock at Addr
+
+   --  Soft-Links are used for procedures that manipulate locks to avoid
+   --  dragging the tasking run time when using access-to-controlled types.
+
+   Initialize_RTS_Lock : constant Set_Address_Call := Null_Set_Address'Access;
+   Finalize_RTS_Lock   : constant Set_Address_Call := Null_Set_Address'Access;
+   Acquire_RTS_Lock    : constant Set_Address_Call :=
+                                                 Acquire_RTS_Lock_Soft'Access;
+   Release_RTS_Lock    : constant Set_Address_Call :=
+                                                 Release_RTS_Lock_Soft'Access;
+
+   procedure Tasking_Runtime_Initialize is null;
+   pragma Export (Ada, Tasking_Runtime_Initialize,
+                  "__gnat_tasking_runtime_initialize");
+   --  Nothing to do since the above soft-links need not be changed
+
    -------------------------------------
    -- Exception Tracebacks Soft-Links --
    -------------------------------------
@@ -172,8 +205,13 @@ package System.Soft_Links is
    --  in g-exctra.adb.
 
    pragma Atomic (Traceback_Decorator_Wrapper);
-   --  Since concurrent read/write operations may occur on this variable. See
-   --  the body of Tailored_Exception_Traceback in Ada.Exceptions for a more
-   --  detailed description of the potential problems.
+   --  Since concurrent read/write operations may occur on this variable.
+   --  See the body of Tailored_Exception_Traceback in
+   --  Ada.Exceptions.Exception_Data for a more detailed description of the
+   --  potential problems.
+
+   procedure Save_Library_Occurrence (E : EOA);
+   --  When invoked, this routine saves an exception occurrence into a hidden
+   --  reference. Subsequent calls will have no effect.
 
 end System.Soft_Links;

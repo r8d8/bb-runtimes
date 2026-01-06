@@ -6,7 +6,7 @@
 --                                                                          --
 --                                  S p e c                                 --
 --                                                                          --
---          Copyright (C) 1997-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 1997-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -29,9 +29,10 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  Ravenscar version
+
 --  This package encapsulates all direct interfaces to task debugging services
 --  that are needed by gdb with gnat mode.
---  (Ravenscar version)
 
 package System.Tasking.Debug is
    pragma Preelaborate;

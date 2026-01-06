@@ -6,7 +6,7 @@
 --                                                                          --
 --                                  S p e c                                 --
 --                                                                          --
---                     Copyright (C) 2001-2023, AdaCore                     --
+--                     Copyright (C) 2001-2025, AdaCore                     --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -34,13 +34,21 @@
 --  Note: the compiler generates direct calls to this interface, via Rtsfind.
 --  Any changes to this interface may require corresponding compiler changes.
 
---  This package encapsulates the implementation of interrupt or signal
---  handlers. It is logically an extension of the body of Ada.Interrupts.
---  It is made a child of System to allow visibility of various
---  runtime system internal data and operations.
+--  This package provides the required support for the implementation of
+--  ``Ada.Interrupts``, using GNULL primitives. This package has been
+--  specifically tailored to meet the Ravenscar Profile restrictions on all
+--  bare board Ravenscar targets.
+--
+--  This package provides the interface to install a protected handler. Its
+--  implementation is based on providing a table where the interrupt
+--  handlers are registered, so that the appropriate interrupt handler is
+--  invoked.
+--
+--  An interrupt wrapper is defined in the body of this package which is the
+--  one that is actually registered as the handler in the underlying
+--  executive layer.
 
 with System.OS_Interface;
---  used for Max_Interrupt
 
 package System.Interrupts is
    pragma Elaborate_Body;

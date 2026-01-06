@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---                     Copyright (C) 2011-2023, AdaCore                     --
+--                     Copyright (C) 2011-2025, AdaCore                     --
 --                                                                          --
 -- GNARL is free software; you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -92,13 +92,27 @@ package body System.BB.Execution_Time is
    ------------------
 
    function Elapsed_Time return System.BB.Time.Time is
-      CPU_Id : constant CPU := System.OS_Interface.Current_CPU;
-
-      Now  : constant BB.Time.Time := System.BB.Time.Clock;
-      pragma Assert (Now >= CPU_Clock (CPU_Id));
+      CPU_Id  : constant CPU := System.OS_Interface.Current_CPU;
+      Elapsed : System.BB.Time.Time;
 
    begin
-      return Now - CPU_Clock (CPU_Id);
+      --  Protect against interruption the reading of the current clock (Now)
+      --  and the last scheduling event (CPU_Clock). Otherwise, CPU_Clock could
+      --  be updated in between and provide a wrong value.
+
+      System.BB.Protection.Enter_Kernel;
+
+      declare
+         Now  : constant BB.Time.Time := System.BB.Time.Clock;
+         pragma Assert (Now >= CPU_Clock (CPU_Id));
+
+      begin
+         Elapsed := Now - CPU_Clock (CPU_Id);
+      end;
+
+      System.BB.Protection.Leave_Kernel;
+
+      return Elapsed;
    end Elapsed_Time;
 
    ----------------------------

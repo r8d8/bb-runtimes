@@ -13,6 +13,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  ARM D.14 defines ``Ada.Execution_Time`` as a means to measure the execution
+--  time of tasks and interrupts . Execution time is measured in ``CPU_Time``.
+
 with Ada.Task_Identification;
 with Ada.Real_Time;
 

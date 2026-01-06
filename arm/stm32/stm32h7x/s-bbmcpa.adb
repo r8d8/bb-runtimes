@@ -45,16 +45,16 @@ package body System.BB.MCU_Parameters is
    begin
       --  Enable LDO regulator
       PWR_Periph.CR3.LDOEN := 1;
-      
+
       --  Wait for LDO ready
       loop
          exit when PWR_Periph.CSR1.ACTVOSRDY = 1;
       end loop;
-      
+
       --  Set voltage scaling to Scale 1 (highest performance)
       --  for operation up to 480 MHz
       PWR_Periph.D3CR.VOS := PWR_D3CR_VOS_Scale_1;
-      
+
       --  Wait for voltage scaling ready
       loop
          exit when PWR_Periph.D3CR.VOSRDY = 1;

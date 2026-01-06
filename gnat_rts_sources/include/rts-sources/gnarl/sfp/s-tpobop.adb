@@ -6,7 +6,7 @@
 --                                                                          --
 --                                  B o d y                                 --
 --                                                                          --
---         Copyright (C) 1998-2023, Free Software Foundation, Inc.          --
+--         Copyright (C) 1998-2025, Free Software Foundation, Inc.          --
 --                                                                          --
 -- GNARL is free software; you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -156,6 +156,10 @@ package body System.Tasking.Protected_Objects.Operations is
                --  This violates the Max_Entry_Queue_Length restriction or the
                --  Max_Queue_Length bound, raise Program_Error. The entry call
                --  has completed.
+
+               --  Release the lock before raising the exception
+
+               Unlock_Entries (Object);
 
                raise Program_Error;
 

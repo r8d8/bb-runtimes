@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
---          Copyright (C) 2012-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 2012-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -30,6 +30,13 @@
 ------------------------------------------------------------------------------
 
 --  Last chance handler. Unhandled exceptions are passed to this routine
+
+--  This procedure is called when an exception is raised through compiler
+--  inserted calls. It is designed to be overridden by user defined functions
+--  (using the external name ``__gnat_last_chance_handler``).
+--
+--  The runtime provides a default last chance handler implementation, which
+--  prints the exception message to the console and stops the execution.
 
 with System;
 

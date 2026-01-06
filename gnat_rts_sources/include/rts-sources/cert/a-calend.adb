@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---                     Copyright (C) 2004-2023, AdaCore                     --
+--                     Copyright (C) 2004-2025, AdaCore                     --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -326,9 +326,9 @@ is
 
    function Trunc (Arg : Time) return Integer is
       Rounded : constant Integer := Integer (Arg);
-      Sign    : constant Integer := Rounded / abs (Rounded);
+      Sign    : constant Integer := Rounded / abs Rounded;
    begin
-      if abs (Time (Rounded)) > abs (Arg) then
+      if abs Time (Rounded) > abs Arg then
          return Rounded - Sign;
       else
          return Rounded;
@@ -338,20 +338,20 @@ is
    function Trunc (Arg : Duration) return Integer is
       Rounded : constant Integer := Integer (Arg);
    begin
-      if Rounded = 0 or else abs (Duration (Rounded)) <= abs (Arg) then
+      if Rounded = 0 or else abs Duration (Rounded) <= abs Arg then
          return Rounded;
       else
-         return Rounded - Rounded / abs (Rounded);
+         return Rounded - Rounded / abs Rounded;
       end if;
    end Trunc;
 
    function Trunc (Arg : Julian_Day'Base) return Integer is
       Rounded : constant Integer := Integer (Arg);
    begin
-      if Rounded = 0 or else abs (Julian_Day'Base (Rounded)) <= abs (Arg) then
+      if Rounded = 0 or else abs Julian_Day'Base (Rounded) <= abs Arg then
          return Rounded;
       else
-         return Rounded - Rounded / abs (Rounded);
+         return Rounded - Rounded / abs Rounded;
       end if;
    end Trunc;
 

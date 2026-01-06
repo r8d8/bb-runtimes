@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---                     Copyright (C) 2001-2023, AdaCore                     --
+--                     Copyright (C) 2001-2025, AdaCore                     --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -155,10 +155,10 @@ is
         (if Left = Time_Span_First then
             Max_Neg_Time_Span
          else
-            Uint_64 (abs (Left)));
+            Uint_64 (abs Left));
       --  Remove sign of left operator
 
-      Abs_Right : constant Uint_64 := Uint_64 (abs (LLI (Right)));
+      Abs_Right : constant Uint_64 := Uint_64 (abs LLI (Right));
       --  Remove sign of right operator
 
    begin
@@ -204,9 +204,9 @@ is
          return Time (Uint_64 (Left) - Max_Neg_Time_Span);
 
       elsif Right < 0 and then Right > Time_Span'First
-        and then Left >= Time (abs (Right))
+        and then Left >= Time (abs Right)
       then
-         return Time (Uint_64 (Left) - Uint_64 (abs (Right)));
+         return Time (Uint_64 (Left) - Uint_64 (abs Right));
 
       else
          raise Constraint_Error;
@@ -243,9 +243,9 @@ is
          return Left + Time (Max_Neg_Time_Span);
 
       elsif Right < 0 and then Right > Time_Span'First
-        and then Uint_64 (Time_Last) - Uint_64 (Left) >= Uint_64 (abs (Right))
+        and then Uint_64 (Time_Last) - Uint_64 (Left) >= Uint_64 (abs Right)
       then
-         return Left + Time (abs (Right));
+         return Left + Time (abs Right);
 
       else
          raise Constraint_Error;

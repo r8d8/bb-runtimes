@@ -13,6 +13,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  This package implements ARM D.14.3 to provide access to the cpu time spent
+--  in interrupt handlers.
+
 with Ada.Interrupts;
 with Ada.Real_Time;
 

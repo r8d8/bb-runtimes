@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
---          Copyright (C) 2005-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 2005-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -29,18 +29,19 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  This package provides a simple, default implementation of a function that
---  returns a pointer to a secondary stack for use in single-threaded
---  applications. It is not suitable for multi-threaded applications.
+--  This package provides a default secondary stack allocator implementation
+--  for use with single-threaded applications. Memory is allocated from global
+--  memory pool. It is not suitable for multi-threaded applications.
 --
 --  The function defined in this package is used when the following two
 --  conditions are met:
---    1) No user-defined implementation has been provided. That is, the
---       symbol __gnat_get_sec_stack is not exported by the user's code.
---    2) No tasking is used. When tasking is used, __gnat_get_secondary_stack
---       is resolved by libgnarl.a (that contains a thread-safe implementation
---       of the secondary stack), so that the single-threaded version is not
---       included in the final executable.
+--
+--  1. No user-defined implementation has been provided. That is, the
+--     symbol __gnat_get_sec_stack is not exported by the user's code.
+--  2. No tasking is used. When tasking is used, __gnat_get_secondary_stack
+--     is resolved by libgnarl.a (that contains a thread-safe implementation
+--     of the secondary stack), so that the single-threaded version is not
+--     included in the final executable.
 
 pragma Restrictions (No_Elaboration_Code);
 --  We want to guarantee the absence of elaboration code because the binder
@@ -51,6 +52,6 @@ package System.Secondary_Stack.Single_Task is
    function Get_Sec_Stack return SS_Stack_Ptr;
    pragma Export (C, Get_Sec_Stack, "__gnat_get_secondary_stack");
    --  Return the pointer of the secondary stack to be used for single-threaded
-   --  applications, as expected by System.Secondary_Stack.
+   --  applications, as expected by ``System.Secondary_Stack``.
 
 end System.Secondary_Stack.Single_Task;

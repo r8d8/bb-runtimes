@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
---          Copyright (C) 1992-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 1992-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- This specification is derived from the Ada Reference Manual for use with --
 -- GNAT. The copyright notice above, and the license provisions that follow --
@@ -34,6 +34,16 @@
 ------------------------------------------------------------------------------
 
 --  This is the generic bare board version of this package
+
+--  This package provides the functionality defined in ARM D.10 for suspending
+--  and resuming tasks. Tasks can just suspend themselves (not allowed to
+--  suspend another task), and any task can resume a suspended task. This
+--  package has been specifically tailored to meet the Ravenscar Profile
+--  restrictions on all bare board Ravenscar targets.
+--
+--  This package provides the functionality to change and query the status
+--  of a suspension object, and to block the calling task until the state of
+--  the suspension object is set to ``True``.
 
 with Ada.Task_Identification;
 

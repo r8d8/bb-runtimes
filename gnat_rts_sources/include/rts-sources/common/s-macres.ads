@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
---           Copyright (C) 2011-2023, Free Software Foundation, Inc.        --
+--           Copyright (C) 2011-2025, Free Software Foundation, Inc.        --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -29,9 +29,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  Abruptly stop the program.
---  On bareboard platform, this returns to the monitor or reset the board.
---  In the context of an OS, this terminates the process.
+--  Provides a `Stop` procedure to abruptly stop the program. For bare-metal
+--  platforms it will return to the monitor or reset the board. For OS
+--  platforms the process will exit.
 
 package System.Machine_Reset is
    pragma No_Elaboration_Code_All;

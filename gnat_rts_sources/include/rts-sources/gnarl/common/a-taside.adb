@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---           Copyright (C) 1992-2023, Free Software Foundation, Inc.        --
+--           Copyright (C) 1992-2025, Free Software Foundation, Inc.        --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -31,9 +31,12 @@
 
 --  This is the Ravenscar version of this package
 
+--  This is a simplified version of the ``Ada.Task_Identification`` package
+--  defined by ARM C.7.1 since task abort is not supported by Ravenscar. It
+--  provides operations to retrieve and compare task identifiers, and to get
+--  their state. The ``Image`` function returns an empty string.
+
 with System.Task_Primitives.Operations;
---  used for Self
---           Is_Task_Context
 
 pragma Warnings (Off);
 --  Allow withing of non-Preelaborated units in Ada 2005 mode where this
@@ -41,7 +44,6 @@ pragma Warnings (Off);
 --  It is safe in the context of the run-time to violate the rules.
 
 with System.Tasking.Restricted.Stages;
---  used for Restricted_Terminated
 
 pragma Warnings (On);
 

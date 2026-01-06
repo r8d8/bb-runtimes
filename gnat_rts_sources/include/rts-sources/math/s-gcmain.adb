@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---          Copyright (C) 1992-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 1992-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -158,13 +158,13 @@ package body System.Generic_C_Math_Interface is
    --    from 0.0 to approximately Pi.
 
    --  Exceptions:
-   --    Argument_Error is raised when abs (X) > 1.0
+   --    Argument_Error is raised when abs X > 1.0
 
    --  Tightly approximated results:
    --    Arccos (0.0) = Pi / 2.0;
    --    Arccos (1.0) = 0.0;
 
-   --  Since C mandates a NaN result for abs (X) > 1.0 and testing
+   --  Since C mandates a NaN result for abs X > 1.0 and testing
    --  for a NaN only requires a single test without calling the "abs"
    --  function, the result is checked rather than the argument.
 
@@ -189,7 +189,7 @@ package body System.Generic_C_Math_Interface is
    --    from 0.0 to approximately Cycle / 2.0.
 
    --  Exceptions:
-   --    Argument_Error is raised when abs (X) > 1.0 or when Cycle <= 0.0
+   --    Argument_Error is raised when abs X > 1.0 or when Cycle <= 0.0
    --      or when either parameter is a NaN
 
    --  Prescribed results:
@@ -198,7 +198,7 @@ package body System.Generic_C_Math_Interface is
    --  Tightly approximated results:
    --    Arccos (0.0) = Cycle / 4.0
 
-   --  Since C mandates a NaN result for abs (X) > 1.0 and testing for a NaN
+   --  Since C mandates a NaN result for abs X > 1.0 and testing for a NaN
    --  only requires a single test without calling the "abs" function, the
    --  result is checked rather than the argument. The tightly approximated
    --  result may not be obtained by dividing the C_Acos result by Pi, since
@@ -311,7 +311,7 @@ package body System.Generic_C_Math_Interface is
    -------------
 
    --  Exceptions:
-   --    Argument_Error is raised if abs (X) < 1.0
+   --    Argument_Error is raised if abs X < 1.0
    --    Constraint_Error is raised if X = +-1.0
 
    function Arccoth (X : Float_Type'Base) return Float_Type'Base is
@@ -543,7 +543,7 @@ package body System.Generic_C_Math_Interface is
    -------------
 
    --  Exceptions:
-   --    Argument_Error is raised when abs (X) > 1.0
+   --    Argument_Error is raised when abs X > 1.0
    --    Constraint_Error is raised when X = +-1.0
 
    --  Prescribed results:
@@ -553,8 +553,8 @@ package body System.Generic_C_Math_Interface is
 
    function Arctanh (X : Float_Type'Base) return Float_Type'Base is
    begin
-      if not (abs (X) < 1.0) then
-         if abs (X) = 1.0 then
+      if not (abs X < 1.0) then
+         if abs X = 1.0 then
             raise Constraint_Error;
          else
             raise Argument_Error;

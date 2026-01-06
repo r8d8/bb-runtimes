@@ -8,7 +8,7 @@
 --                                                                          --
 --        Copyright (C) 1999-2002 Universidad Politecnica de Madrid         --
 --             Copyright (C) 2003-2005 The European Space Agency            --
---                     Copyright (C) 2003-2023, AdaCore                     --
+--                     Copyright (C) 2003-2025, AdaCore                     --
 --                                                                          --
 -- GNARL is free software; you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -79,7 +79,7 @@ package body System.BB.Threads.Queues is
 
       --  Outside of the executive kernel, the running thread is also the first
       --  thread in the First_Thread_Table list. This is also true in general
-      --  within the kernel, except during transcient period when a task is
+      --  within the kernel, except during transient period when a task is
       --  extracted from the list (blocked by a delay until or on an entry),
       --  when a task is inserted (after a wakeup), after a yield or after
       --  this procedure. But then a context_switch put things in order.
@@ -102,7 +102,7 @@ package body System.BB.Threads.Queues is
       --  before the context switch, an interrupt triggers and change the
       --  priority of the running thread.
 
-      --  First, find THREAD in the queue and remove it temporarly.
+      --  First, find THREAD in the queue and remove it temporarily
 
       Head := First_Thread_Table (CPU_Id);
 
@@ -261,12 +261,20 @@ package body System.BB.Threads.Queues is
 
    begin
       --  A CPU can only insert a task to its own queue, except during
-      --  elaboration where the main CPU will add new tasks to their
-      --  respective CPU's queues. Since the runtime doesn't have a
-      --  mechanism to detect when elaboration has finished, the assertion
-      --  can only catch non-Main CPUs accessing the wrong CPU queues.
+      --  elaboration where the environment task (that can execute only on the
+      --  first CPU) will add new tasks to their respective CPU's queues. The
+      --  elaboration part is executed within a single CPU, and the rest of
+      --  CPUs will not be started until the end of the elaboration (hence
+      --  these other CPUs do not have any running thread during elaboration).
 
-      pragma Assert (CPU_Id = Current_CPU or else CPU_Id = CPU'First);
+      pragma Assert
+         --  CPU inserting to its own queue
+         (CPU_Id = Current_CPU or else
+         --  Environment task initializing the queue for other CPUs during
+         --  elaboration.
+          (Current_CPU = CPU'First and then
+           Running_Thread_Table (CPU_Id) = null)
+         );
 
       --  No insertion if the task is already at the head of the queue
 

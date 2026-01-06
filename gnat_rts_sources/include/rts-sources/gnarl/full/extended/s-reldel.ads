@@ -6,7 +6,7 @@
 --                                                                          --
 --                                  S p e c                                 --
 --                                                                          --
---             Copyright (C) 2016-2023, Free Software Foundation, Inc.      --
+--             Copyright (C) 2016-2025, Free Software Foundation, Inc.      --
 --                                                                          --
 -- GNARL is free software; you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -29,9 +29,8 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  This package implements relative delays on runtime without Ada.Calendar
-
---  Note: the compiler generates direct calls to this interface
+--  This package implements relative delays on run-times without
+--  ``Ada.Calendar``.
 
 package System.Relative_Delays is
 

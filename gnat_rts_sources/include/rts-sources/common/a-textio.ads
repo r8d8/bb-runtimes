@@ -6,7 +6,7 @@
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
---          Copyright (C) 1992-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 1992-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNAT is free software;  you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -29,9 +29,12 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  Note: this package is not compliant with the one defined in the Ada
---  Reference Manual. It is a stripped down version for ZFP and bare-board
---  runtimes.
+--  This package provides a reduced implementation of the Ada.Text_IO package
+--  defined by ARM A.10.1. It offers a simple interface to print characters and
+--  strings to the console, and to read characters.
+
+--  This package is not compliant with the one defined in the Ada Reference
+--  Manual. It is a stripped down version for light and embedded runtimes.
 
 package Ada.Text_IO with
   SPARK_Mode,

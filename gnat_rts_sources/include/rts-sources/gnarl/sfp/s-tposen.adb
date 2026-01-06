@@ -7,7 +7,7 @@
 --                                                                          --
 --                                  B o d y                                 --
 --                                                                          --
---                     Copyright (C) 1998-2023, AdaCore                     --
+--                     Copyright (C) 1998-2025, AdaCore                     --
 --                                                                          --
 -- GNARL is free software; you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -57,10 +57,6 @@ pragma Suppress (All_Checks);
 with System.Multiprocessors;
 
 with System.Task_Primitives.Operations;
---  used for Self
---           Get_Priority
---           Set_Priority
-
 with System.Tasking.Protected_Objects.Multiprocessors;
 
 package body System.Tasking.Protected_Objects.Single_Entry is

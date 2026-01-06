@@ -6,7 +6,7 @@
 --                                                                          --
 --                                  S p e c                                 --
 --                                                                          --
---         Copyright (C) 1992-2023, Free Software Foundation, Inc.          --
+--         Copyright (C) 1992-2025, Free Software Foundation, Inc.          --
 --                                                                          --
 -- GNARL is free software; you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -29,7 +29,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  Queue implementation for extended ravenscar runtime
+--  This package provides a queue implementation used for entry call queues
+--  in the tasking implementation. It provides primitives to add and remove
+--  items from the queue in FIFO.
 
 with System.Tasking.Protected_Objects.Entries;
 

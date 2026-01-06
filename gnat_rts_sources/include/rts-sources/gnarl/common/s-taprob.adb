@@ -6,7 +6,7 @@
 --                                                                          --
 --                                  B o d y                                 --
 --                                                                          --
---          Copyright (C) 1992-2023, Free Software Foundation, Inc.         --
+--          Copyright (C) 1992-2025, Free Software Foundation, Inc.         --
 --                                                                          --
 -- GNARL is free software; you can  redistribute it  and/or modify it under --
 -- terms of the  GNU General Public License as published  by the Free Soft- --
@@ -32,9 +32,6 @@
 --  This is the Ravenscar version of this package
 
 with System.Task_Primitives.Operations;
---  Used for Set_Priority
---           Get_Priority
---           Self
 
 package body System.Tasking.Protected_Objects is
 

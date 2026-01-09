@@ -1,2 +1,2 @@
-last_build_profile = "bb_runtimes=DEVELOPMENT"
+last_build_profile = "bb_runtimes=DEVELOPMENT,gnat_arm_elf=RELEASE,gprbuild=RELEASE"
 

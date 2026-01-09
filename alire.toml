@@ -14,7 +14,7 @@ windows = true
 macos = true
 
 [[depends-on]]
-gnat = "^14.1.0"
+gnat_arm_elf = "^15"
 gprbuild = "*"
 
 [configuration]

@@ -224,7 +224,7 @@ procedure Setup_Pll is
 
       --  Configure Flash wait states before frequency increase
       --  Flash latency for AXI interface clock (HCLK)
-      FLASH_Periph.ACR.LATENCY := FLASH_Latency;
+      Flash_Periph.ACR.LATENCY := FLASH_Latency;
 
       --  Configure domain clocks
       RCC_Periph.D1CFGR :=
